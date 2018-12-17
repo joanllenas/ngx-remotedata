@@ -11,7 +11,7 @@ You are making an API request and you want to display different things based on 
 ### The Boolean approach
 
 ```ts
-export interface SunriseState {
+export interface SunriseSunset {
   isLoading: boolean;
   error: string;
   data: {
