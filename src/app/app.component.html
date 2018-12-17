@@ -1,0 +1,29 @@
+<div class="container">
+  <nav>
+    <div class="nav-wrapper">
+      <div class="row">
+        <div class="col s12">
+          <a href="#" class="brand-logo">RemoteData examples</a>
+        </div>
+      </div>
+    </div>
+  </nav>
+  <div class="row">
+    <div class="col s3">
+      <div class="collection">
+        <a routerLink="basics" routerLinkActive="active" class="collection-item"
+          >Basics</a
+        >
+        <a routerLink="pos" routerLinkActive="active" class="collection-item"
+          >Plain Old Services</a
+        >
+        <a routerLink="ngrx" routerLinkActive="active" class="collection-item"
+          >Ngrx</a
+        >
+      </div>
+    </div>
+    <div class="col s9" style="margin: .5rem 0 1rem 0;">
+      <router-outlet></router-outlet>
+    </div>
+  </div>
+</div>
