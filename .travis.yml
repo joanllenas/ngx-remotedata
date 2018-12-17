@@ -1,24 +1,23 @@
-language: node_js
 dist: trusty
-sudo: required
-cache:
-  directories:
-    - node_modules
-notifications:
-  email: false
+sudo: false
+
+language: node_js
 node_js:
   - '8'
-before_install:
-  - export DISPLAY=:99.0
-  - sh -e /etc/init.d/xvfb start
-  - sleep 3 # give xvfb some time to start
+
 addons:
-  chrome: stable
-before_script:
-  - npm prune
+  apt:
+    sources:
+      - google-chrome
+    packages:
+      - google-chrome-stable
+
+cache:
+  directories:
+    - ./node_modules
+
+install:
+  - npm install
+
 script:
-  - npm run build
-  - npm run test -- --watch=false
-branches:
-  except:
-    - /^v\d+\.\d+\.\d+$/
+  - npm run test -- --no-watch --no-progress --browsers=ChromeHeadlessCI
