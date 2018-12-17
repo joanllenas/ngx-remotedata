@@ -216,6 +216,6 @@ Returns the `Loading` payload when `RemoteData` is a `Loading` instance or `unde
 
 ### failureValue
 
-`failureValue | RemoteData<E> : (E | undefined)`
+`failureValue | RemoteData<T, E> : (E | undefined)`
 
 Returns the `Failure` payload when `RemoteData` is a `Failure` instance or `undefined` instead.
