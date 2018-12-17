@@ -2,6 +2,8 @@
 
 **Slaying a UI Antipattern with Angular.**
 
+[![Build Status](https://travis-ci.org/joanllenas/ngx-remotedata.svg?branch=master)](https://travis-ci.org/joanllenas/ngx-remotedata)
+
 This small toolkit was inspired by [Kris Jenkins](https://twitter.com/krisajenkins) blog post about [How Elm slays a UI antipattern](http://blog.jenkster.com/2016/06/how-elm-slays-a-ui-antipattern.html).
 
 ## What we are trying to solve
