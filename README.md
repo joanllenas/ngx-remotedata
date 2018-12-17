@@ -58,9 +58,9 @@ This approach **makes it impossible to create invalid states**.
 
 ## Examples
 
-- [The basics]()
-- [Plain old services]()
-- [Ngrx]()
+- [The basics](src/app/examples/basics)
+- [Plain old services](src/app/examples/pos)
+- [Ngrx](src/app/examples/ngrx)
 
 ## Api
 
