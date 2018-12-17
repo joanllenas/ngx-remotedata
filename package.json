@@ -1,6 +1,6 @@
 {
   "name": "ngx-remotedata",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
@@ -8,7 +8,7 @@
     "test": "ng test lib",
     "lint": "ng lint lib",
     "e2e": "ng e2e",
-    "release": "npm run build && npm publish dist"
+    "release": "npm run build && npm publish 'dist/lib'"
   },
   "private": true,
   "dependencies": {
