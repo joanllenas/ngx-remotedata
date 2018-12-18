@@ -156,7 +156,7 @@ When a `RemoteData` is an instance of the `NotAsked` class, it means that the re
 
 `Loading<T>`
 
-When a `RemoteData` is an instance of the `Loading` class, it means that the request has been made, but the request hasn't returned any data yet. The `Loading` class can contain a value of the same `T` type as the `Success` class. Useful when you want to use the last `Success` value while the new data is loading.
+When a `RemoteData` is an instance of the `Loading` class, it means that the request has been made, but it hasn't returned any data yet. The `Loading` class can contain a value of the same `T` type as the `Success` class. Useful when you want to use the last `Success` value while the new data being fetched.
 
 ### Success
 
@@ -206,16 +206,16 @@ Returns true when `RemoteData` is a `Success` instance.
 
 `successValue | RemoteData<T> : (T | undefined)`
 
-Returns the `Success` payload when `RemoteData` is a `Success` instance or `undefined` instead.
+Returns the `Success` payload (of type `T`) when `RemoteData` is a `Success` instance or `undefined` instead.
 
 ### loadingValue
 
 `loadingValue | RemoteData<T> : (T | undefined)`
 
-Returns the `Loading` payload when `RemoteData` is a `Loading` instance or `undefined` instead.
+Returns the `Loading` payload (of type `T`) when `RemoteData` is a `Loading` instance or `undefined` instead.
 
 ### failureValue
 
 `failureValue | RemoteData<T, E> : (E | undefined)`
 
-Returns the `Failure` payload when `RemoteData` is a `Failure` instance or `undefined` instead.
+Returns the `Failure` payload (of type `E`) when `RemoteData` is a `Failure` instance or `undefined` instead.
