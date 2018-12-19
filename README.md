@@ -3,8 +3,11 @@
 **Slaying a UI Antipattern with Angular.**
 
 [![Build Status](https://travis-ci.org/joanllenas/ngx-remotedata.svg?branch=master)](https://travis-ci.org/joanllenas/ngx-remotedata)
+[![npm version](https://badge.fury.io/js/ngx-remotedata.svg)](https://badge.fury.io/js/ngx-remotedata)
 
-Library inspired by [Kris Jenkins](https://twitter.com/krisajenkins) blog post about [How Elm slays a UI antipattern](http://blog.jenkster.com/2016/06/how-elm-slays-a-ui-antipattern.html).
+Library inspired by [Kris Jenkins](https://twitter.com/krisajenkins) blog post about [How Elm slays a UI antipattern](http://blog.jenkster.com/2016/06/how-elm-slays-a-ui-antipattern.html), which mixes pretty well with [another article](http://scotthurff.com/posts/why-your-user-interface-is-awkward-youre-ignoring-the-ui-stack) written by [Scott Hurff](https://twitter.com/scotthurff) about what he calls the _UI Stack_.
+
+![](./.github/ui-stack.jpg)
 
 ## What we are trying to solve
 
