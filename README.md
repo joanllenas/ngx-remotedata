@@ -159,13 +159,13 @@ When a `RemoteData` is an instance of the `NotAsked` class, it means that the re
 
 `Loading<T>`
 
-When a `RemoteData` is an instance of the `Loading` class, it means that the request has been made, but it hasn't returned any data yet. The `Loading` class can contain a value of the same `T` type as the `Success` class. Useful when you want to use the last `Success` value while the new data being fetched.
+When a `RemoteData` is an instance of the `Loading` class, it means that the request has been made, but it hasn't returned any data yet. The `Loading` class can contain a value of the same `T` type as the `Success` class. Useful when you want to use the last `Success` value while the new data is being fetched.
 
 ### Success
 
 `Success<T>`
 
-When a `RemoteData` is an instance of the `Success` class, it means that the request has been made successfully and the new data (of type `T`) is available.
+When a `RemoteData` is an instance of the `Success` class, it means that the request has completed successfully and the new data (of type `T`) is available.
 
 ### Failure
 
@@ -191,7 +191,7 @@ Returns true when `RemoteData` is a `Loading` instance.
 
 `anyIsLoading | Observable<RemoteData<any>>[] : boolean`
 
-Returns true when any `RemoteData[]` is a `Loading` instance.
+Returns true when any item in `RemoteData[]` is a `Loading` instance.
 
 ### isFailure
 
