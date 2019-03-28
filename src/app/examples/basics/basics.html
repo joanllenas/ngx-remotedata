@@ -1,4 +1,4 @@
-<h4>isNotAsked, isLoading, isSuccess, isFailure</h4>
+<h4>isNotAsked, isInProgress, isSuccess, isFailure</h4>
 <div class="row">
   <div class="col s4">
     <form [formGroup]="radiogroupForm">
@@ -18,9 +18,9 @@
           <input
             formControlName="testDataRadioGroup"
             type="radio"
-            value="loading"
+            value="inProgress"
           />
-          <span>Loading</span>
+          <span>InProgress</span>
         </label>
       </p>
       <p>
@@ -48,8 +48,8 @@
   <div class="col s8">
     <!-- NotAsked -->
     <h5 *ngIf="(testData$ | async | isNotAsked)">Not Asked</h5>
-    <!-- Loading -->
-    <div *ngIf="(testData$ | async | isLoading)" class="progress">
+    <!-- InProgress -->
+    <div *ngIf="(testData$ | async | isInProgress)" class="progress">
       <div class="indeterminate"></div>
     </div>
     <!-- Success -->
@@ -63,39 +63,39 @@
   </div>
 </div>
 
-<h4>anyIsLoading</h4>
+<h4>anyIsInProgress</h4>
 <div class="row">
   <div class="col s4">
     <form [formGroup]="checkboxForm">
       <p>
         <label>
           <input type="checkbox" formControlName="check1" />
-          <span>Loading</span>
+          <span>InProgress</span>
         </label>
       </p>
       <p>
         <label>
           <input type="checkbox" formControlName="check2" />
-          <span>Loading</span>
+          <span>InProgress</span>
         </label>
       </p>
       <p>
         <label>
           <input type="checkbox" formControlName="check3" />
-          <span>Loading</span>
+          <span>InProgress</span>
         </label>
       </p>
     </form>
   </div>
   <div class="col s8">
     <div
-      *ngIf="([loading1$, loading2$, loading3$] | anyIsLoading)"
+      *ngIf="([inProgress1$, inProgress2$, inProgress3$] | anyIsInProgress)"
       class="progress"
     >
       <div class="indeterminate"></div>
     </div>
-    <h5 *ngIf="!([loading1$, loading2$, loading3$] | anyIsLoading)">
-      Not Loading
+    <h5 *ngIf="!([inProgress1$, inProgress2$, inProgress3$] | anyIsInProgress)">
+      Not InProgress
     </h5>
   </div>
 </div>

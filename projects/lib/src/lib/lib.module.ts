@@ -1,24 +1,24 @@
 import { NgModule } from '@angular/core';
 import {
   IsNotAskedPipe,
-  IsLoadingPipe,
+  IsInProgressPipe,
   IsFailurePipe,
   IsSuccessPipe,
   GetSuccessPipe,
   GetFailurePipe,
-  GetLoadingPipe,
-  AnyIsLoadingPipe
+  GetInProgressPipe,
+  AnyIsInProgressPipe
 } from './pipes';
 
 const declarations = [
   IsNotAskedPipe,
-  IsLoadingPipe,
+  IsInProgressPipe,
   IsFailurePipe,
   IsSuccessPipe,
   GetSuccessPipe,
   GetFailurePipe,
-  GetLoadingPipe,
-  AnyIsLoadingPipe
+  GetInProgressPipe,
+  AnyIsInProgressPipe
 ];
 
 @NgModule({
