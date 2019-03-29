@@ -10,11 +10,11 @@
   </button>
 </div>
 
-<!-- Loading -->
+<!-- InProgress -->
 <div
   class="progress"
   [ngStyle]="{
-    visibility: (service.meow$ | async | isLoading) ? 'visible' : 'hidden'
+    visibility: (service.meow$ | async | isInProgress) ? 'visible' : 'hidden'
   }"
 >
   <div class="indeterminate"></div>
@@ -24,8 +24,8 @@
 <div
   *ngIf="
     (service.meow$ | async | isSuccess) ||
-    ((service.meow$ | async | isLoading) &&
-      (service.meow$ | async | loadingValue))
+    ((service.meow$ | async | isInProgress) &&
+      (service.meow$ | async | inProgressValue))
   "
 >
   <div class="row">
@@ -49,7 +49,7 @@
     class="responsive-img"
     [src]="
       (service.meow$ | async | successValue)?.file ||
-      (service.meow$ | async | loadingValue).file
+      (service.meow$ | async | inProgressValue).file
     "
   />
 </div>

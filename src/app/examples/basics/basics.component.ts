@@ -3,7 +3,7 @@ import { BehaviorSubject, Subscription } from 'rxjs';
 import {
   RemoteData,
   NotAsked,
-  Loading,
+  InProgress,
   Success,
   Failure
 } from '../../../../projects/lib/src/public_api';
@@ -19,16 +19,16 @@ export class BasicsComponent {
   testData$: BehaviorSubject<RemoteData<string>>;
   radiogroupForm: FormGroup;
 
-  loading1$: BehaviorSubject<RemoteData<string>>;
-  loading2$: BehaviorSubject<RemoteData<string>>;
-  loading3$: BehaviorSubject<RemoteData<string>>;
+  inProgress1$: BehaviorSubject<RemoteData<string>>;
+  inProgress2$: BehaviorSubject<RemoteData<string>>;
+  inProgress3$: BehaviorSubject<RemoteData<string>>;
   checkboxForm: FormGroup;
 
   constructor() {
     // Single observable source example
     const map: { [key: string]: RemoteData<string> } = {
       notAsked: new NotAsked(),
-      loading: new Loading(),
+      inProgress: new InProgress(),
       success: new Success('Ok ' + Math.round(1000 * Math.random()).toString()),
       failure: new Failure('Ouch!')
     };
@@ -44,9 +44,9 @@ export class BasicsComponent {
     );
 
     // Multiple observable sources example
-    this.loading1$ = new BehaviorSubject(new NotAsked());
-    this.loading2$ = new BehaviorSubject(new NotAsked());
-    this.loading3$ = new BehaviorSubject(new NotAsked());
+    this.inProgress1$ = new BehaviorSubject(new NotAsked());
+    this.inProgress2$ = new BehaviorSubject(new NotAsked());
+    this.inProgress3$ = new BehaviorSubject(new NotAsked());
     const check1 = new FormControl();
     const check2 = new FormControl();
     const check3 = new FormControl();
@@ -58,18 +58,18 @@ export class BasicsComponent {
     this.subscriptions.push(
       check1.valueChanges.subscribe((checked: boolean) => {
         checked
-          ? this.loading1$.next(new Loading())
-          : this.loading1$.next(new NotAsked());
+          ? this.inProgress1$.next(new InProgress())
+          : this.inProgress1$.next(new NotAsked());
       }),
       check2.valueChanges.subscribe((checked: boolean) => {
         checked
-          ? this.loading2$.next(new Loading())
-          : this.loading2$.next(new NotAsked());
+          ? this.inProgress2$.next(new InProgress())
+          : this.inProgress2$.next(new NotAsked());
       }),
       check3.valueChanges.subscribe((checked: boolean) => {
         checked
-          ? this.loading3$.next(new Loading())
-          : this.loading3$.next(new NotAsked());
+          ? this.inProgress3$.next(new InProgress())
+          : this.inProgress3$.next(new NotAsked());
       })
     );
   }

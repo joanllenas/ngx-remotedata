@@ -1,13 +1,13 @@
 import {
   IsNotAskedPipe,
-  IsLoadingPipe,
+  IsInProgressPipe,
   IsFailurePipe,
   IsSuccessPipe
 } from './pipes';
 import { PipeTransform } from '@angular/core';
 import {
   NotAsked,
-  Loading,
+  InProgress,
   Failure,
   Success,
   AnyRemoteData
@@ -18,17 +18,17 @@ describe('Pipes', () => {
     {
       PipeClass: IsNotAskedPipe,
       rd: new NotAsked(),
-      rdBad: new Loading()
+      rdBad: new InProgress()
     },
     {
-      PipeClass: IsLoadingPipe,
-      rd: new Loading(),
+      PipeClass: IsInProgressPipe,
+      rd: new InProgress(),
       rdBad: new NotAsked()
     },
     {
       PipeClass: IsFailurePipe,
       rd: new Failure('Ouch'),
-      rdBad: new Loading()
+      rdBad: new InProgress()
     },
     {
       PipeClass: IsSuccessPipe,

@@ -1,6 +1,6 @@
 export class NotAsked {}
 
-export class Loading<T> {
+export class InProgress<T> {
   constructor(private val: T | undefined = undefined) {}
   value(): T | undefined {
     return this.val;
@@ -23,7 +23,7 @@ export class Success<T> {
 
 export type RemoteData<T, E = string> =
   | NotAsked
-  | Loading<T>
+  | InProgress<T>
   | Failure<E>
   | Success<T>;
 

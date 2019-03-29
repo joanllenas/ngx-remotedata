@@ -17,7 +17,7 @@ You are making an API request, and you want to display different things based on
 
 ```ts
 export interface SunriseSunset {
-  isLoading: boolean;
+  isInProgress: boolean;
   error: string;
   data: {
     sunrise: string;
@@ -28,7 +28,7 @@ export interface SunriseSunset {
 
 Let’s see what each property means:
 
-- `isLoading`: It‘s true while the remote data is being fetched.
+- `isInProgress`: It‘s true while the remote data is being fetched.
 - `error`: It‘s either null (no errors) or any string (there are errors).
 - `data`: It’s either null (no data) or an object (there is data).
 
@@ -36,7 +36,7 @@ Let’s see what each property means:
 
 ```
 {
-  isLoading: true,
+  isInProgress: true,
   error: 'Fatal error',
   data: {
     sunrise: 'I am good data.',
@@ -54,7 +54,7 @@ Instead of using a complex object we use a single data type to express all possi
 ```ts
 export type RemoteData<T, E = string> =
   | NotAsked
-  | Loading<T>
+  | InProgress<T>
   | Failure<E>
   | Success<T>;
 ```
@@ -83,7 +83,7 @@ import { RemoteDataModule } from 'ngx-remotedata';
 ```ts
 // app.component.ts
 
-import { Loading, NotAsked, Success, Failure } from 'ngx-remotedata';
+import { InProgress, NotAsked, Success, Failure } from 'ngx-remotedata';
 
 @Component({
   selector: 'app-root',
@@ -96,8 +96,8 @@ export class AppComponent {
     this.remoteData = new NotAsked();
   }
 
-  setLoading() {
-    this.remoteData = new Loading();
+  setInProgress() {
+    this.remoteData = new InProgress();
   }
 
   setSuccess() {
@@ -115,7 +115,7 @@ export class AppComponent {
 
 <ul>
   <li><button (click)="setNotAsked()">Not Asked</button></li>
-  <li><button (click)="setLoading()">Loading</button></li>
+  <li><button (click)="setInProgress()">InProgress</button></li>
   <li><button (click)="setSuccess()">Success</button></li>
   <li><button (click)="setFailure()">Failure</button></li>
 </ul>
@@ -123,7 +123,7 @@ export class AppComponent {
 <hr />
 
 <h4 *ngIf="remoteData | isNotAsked">Not Asked</h4>
-<h4 *ngIf="remoteData | isLoading">Loading...</h4>
+<h4 *ngIf="remoteData | isInProgress">InProgress...</h4>
 <h4 *ngIf="remoteData | isSuccess" style="color: green">
   {{ remoteData | successValue }}
 </h4>
@@ -155,11 +155,11 @@ export class AppComponent {
 
 When a `RemoteData` is an instance of the `NotAsked` class, it means that the request hasn't been made yet.
 
-### Loading
+### InProgress
 
-`Loading<T>`
+`InProgress<T>`
 
-When a `RemoteData` is an instance of the `Loading` class, it means that the request has been made, but it hasn't returned any data yet. The `Loading` class can contain a value of the same `T` type as the `Success` class. Useful when you want to use the last `Success` value while the new data is being fetched.
+When a `RemoteData` is an instance of the `InProgress` class, it means that the request has been made, but it hasn't returned any data yet. The `InProgress` class can contain a value of the same `T` type as the `Success` class. Useful when you want to use the last `Success` value while the new data is being fetched.
 
 ### Success
 
@@ -181,17 +181,17 @@ When a `RemoteData` is an instance of the `Failure` class, it means that the req
 
 Returns true when `RemoteData` is a `NotAsked` instance.
 
-### isLoading
+### isInProgress
 
-`isLoading | RemoteData<any> : boolean`
+`isInProgress | RemoteData<any> : boolean`
 
-Returns true when `RemoteData` is a `Loading` instance.
+Returns true when `RemoteData` is a `InProgress` instance.
 
-### anyIsLoading
+### anyIsInProgress
 
-`anyIsLoading | Observable<RemoteData<any>>[] : boolean`
+`anyIsInProgress | Observable<RemoteData<any>>[] : boolean`
 
-Returns true when any item in `RemoteData[]` is a `Loading` instance.
+Returns true when any item in `RemoteData[]` is a `InProgress` instance.
 
 ### isFailure
 
@@ -211,11 +211,11 @@ Returns true when `RemoteData` is a `Success` instance.
 
 Returns the `Success` payload (of type `T`) when `RemoteData` is a `Success` instance or `undefined` instead.
 
-### loadingValue
+### inProgressValue
 
-`loadingValue | RemoteData<T> : (T | undefined)`
+`inProgressValue | RemoteData<T> : (T | undefined)`
 
-Returns the `Loading` payload (of type `T`) when `RemoteData` is a `Loading` instance or `undefined` instead.
+Returns the `InProgress` payload (of type `T`) when `RemoteData` is a `InProgress` instance or `undefined` instead.
 
 ### failureValue
 

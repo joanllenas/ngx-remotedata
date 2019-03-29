@@ -7,7 +7,7 @@ import {
 import {
   AnyRemoteData,
   Failure,
-  Loading,
+  InProgress,
   NotAsked,
   Success
 } from './remote-data';
@@ -17,13 +17,13 @@ const assertIsRemoteData = (rd: unknown) => {
   if (
     !(
       rd instanceof NotAsked ||
-      rd instanceof Loading ||
+      rd instanceof InProgress ||
       rd instanceof Success ||
       rd instanceof Failure
     )
   ) {
     throw new Error(
-      `Value "${rd}" is not a RemoteData<T> instance. Did you forget to use the async pipe? i.e: state$ | async | isLoading`
+      `Value "${rd}" is not a RemoteData<T> instance. Did you forget to use the async pipe? i.e: state$ | async | isInProgress`
     );
   }
 };
@@ -36,16 +36,16 @@ export class IsNotAskedPipe implements PipeTransform {
   }
 }
 
-@Pipe({ name: 'isLoading' })
-export class IsLoadingPipe implements PipeTransform {
+@Pipe({ name: 'isInProgress' })
+export class IsInProgressPipe implements PipeTransform {
   transform(rd: AnyRemoteData): boolean {
     assertIsRemoteData(rd);
-    return rd instanceof Loading;
+    return rd instanceof InProgress;
   }
 }
 
-@Pipe({ name: 'anyIsLoading', pure: false })
-export class AnyIsLoadingPipe implements PipeTransform, OnDestroy {
+@Pipe({ name: 'anyIsInProgress', pure: false })
+export class AnyIsInProgressPipe implements PipeTransform, OnDestroy {
   private _latestValue = false;
   private _subscription: Subscription | null = null;
   private _rds$: Observable<AnyRemoteData>[] = [];
@@ -60,7 +60,7 @@ export class AnyIsLoadingPipe implements PipeTransform, OnDestroy {
     }
     this._rds$ = rds$;
     this._subscription = combineLatest(rds$).subscribe(rds => {
-      this._latestValue = rds.some(rd => rd instanceof Loading);
+      this._latestValue = rds.some(rd => rd instanceof InProgress);
       this.cd.markForCheck();
     });
     return this._latestValue;
@@ -103,11 +103,11 @@ export class GetSuccessPipe implements PipeTransform {
   }
 }
 
-@Pipe({ name: 'loadingValue' })
-export class GetLoadingPipe implements PipeTransform {
+@Pipe({ name: 'inProgressValue' })
+export class GetInProgressPipe implements PipeTransform {
   transform(rd: AnyRemoteData): any {
     assertIsRemoteData(rd);
-    return rd instanceof Loading ? rd.value() : undefined;
+    return rd instanceof InProgress ? rd.value() : undefined;
   }
 }
 

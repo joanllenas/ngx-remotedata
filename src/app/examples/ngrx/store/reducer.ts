@@ -1,7 +1,7 @@
 import { MeowActionTypes, MeowActions } from './actions';
 import {
   NotAsked,
-  Loading,
+  InProgress,
   Success,
   Failure,
   RemoteData
@@ -16,7 +16,7 @@ export const oldValue = (state: RemoteData<CatImage>) =>
 export function meowReducer(state = initialState, action: MeowActions) {
   switch (action.type) {
     case MeowActionTypes.MEOW:
-      return new Loading(oldValue(state));
+      return new InProgress(oldValue(state));
 
     case MeowActionTypes.MEOW_SUCCESS:
       return new Success(action.payload.image);

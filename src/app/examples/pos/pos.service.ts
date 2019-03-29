@@ -5,7 +5,7 @@ import {
   RemoteData,
   NotAsked,
   Success,
-  Loading,
+  InProgress,
   Failure
 } from '../../../../projects/lib/src/lib/remote-data';
 
@@ -24,14 +24,14 @@ export class PosService {
   }
 
   meow() {
-    this.meow$.next(new Loading(oldValue(this.meow$)));
+    this.meow$.next(new InProgress(oldValue(this.meow$)));
     this.meowService
       .meow()
       .subscribe(catImage => this.meow$.next(new Success(catImage)));
   }
 
   meowFail() {
-    this.meow$.next(new Loading(oldValue(this.meow$)));
+    this.meow$.next(new InProgress(oldValue(this.meow$)));
     this.meowService
       .meow()
       .subscribe(_ => this.meow$.next(new Failure('Something wrong happened')));

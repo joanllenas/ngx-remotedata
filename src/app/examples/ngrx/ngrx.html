@@ -10,8 +10,8 @@
   </button>
 </div>
 
-<!-- Loading -->
-<div class="progress" *ngIf="(catImage$ | async | isLoading)">
+<!-- InProgress -->
+<div class="progress" *ngIf="(catImage$ | async | isInProgress)">
   <div class="indeterminate"></div>
 </div>
 

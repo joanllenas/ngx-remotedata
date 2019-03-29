@@ -1,4 +1,4 @@
-import { Success, Failure, Loading } from './remote-data';
+import { Success, Failure, InProgress } from './remote-data';
 
 describe('RemoteData', () => {
   describe('Success', () => {
@@ -8,13 +8,13 @@ describe('RemoteData', () => {
     });
   });
 
-  describe('Loading', () => {
+  describe('InProgress', () => {
     it('should be able to extract the wrapped value', () => {
       const value = { type: 'DoStuff' };
-      expect(new Loading(value).value()).toBe(value);
+      expect(new InProgress(value).value()).toBe(value);
     });
     it('should have a default value of undefined', () => {
-      expect(new Loading().value()).toBe(undefined);
+      expect(new InProgress().value()).toBe(undefined);
     });
   });
 
