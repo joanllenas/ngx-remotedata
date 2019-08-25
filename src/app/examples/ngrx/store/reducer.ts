@@ -8,7 +8,7 @@ import {
 } from '../../../../../projects/lib/src/lib/remote-data';
 import { CatImage } from '../../../services/meow.service';
 
-export const initialState = new NotAsked();
+export const initialState: RemoteData<CatImage> = NotAsked.of();
 
 export const oldValue = (state: RemoteData<CatImage>) =>
   state instanceof Success ? state.value() : undefined;
@@ -16,13 +16,13 @@ export const oldValue = (state: RemoteData<CatImage>) =>
 export function meowReducer(state = initialState, action: MeowActions) {
   switch (action.type) {
     case MeowActionTypes.MEOW:
-      return new InProgress(oldValue(state));
+      return InProgress.of(oldValue(state));
 
     case MeowActionTypes.MEOW_SUCCESS:
-      return new Success(action.payload.image);
+      return Success.of(action.payload.image);
 
     case MeowActionTypes.MEOW_FAILURE:
-      return new Failure(action.payload.error);
+      return Failure.of(action.payload.error);
 
     default:
       return state;

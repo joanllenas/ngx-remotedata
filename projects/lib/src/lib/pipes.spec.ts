@@ -17,23 +17,23 @@ describe('Pipes', () => {
   ([
     {
       PipeClass: IsNotAskedPipe,
-      rd: new NotAsked(),
-      rdBad: new InProgress()
+      rd: NotAsked.of(),
+      rdBad: InProgress.of(null)
     },
     {
       PipeClass: IsInProgressPipe,
-      rd: new InProgress(),
-      rdBad: new NotAsked()
+      rd: InProgress.of(null),
+      rdBad: NotAsked.of()
     },
     {
       PipeClass: IsFailurePipe,
-      rd: new Failure('Ouch'),
-      rdBad: new InProgress()
+      rd: Failure.of('Ouch'),
+      rdBad: InProgress.of(null)
     },
     {
       PipeClass: IsSuccessPipe,
-      rd: new Success('ok'),
-      rdBad: new Failure('grrrr')
+      rd: Success.of('ok'),
+      rdBad: Failure.of('grrrr')
     }
   ] as {
     PipeClass: new () => PipeTransform;

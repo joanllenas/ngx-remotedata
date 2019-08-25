@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnDestroy } from '@angular/core';
 import { BehaviorSubject, Subscription } from 'rxjs';
 import {
   RemoteData,
@@ -13,7 +13,7 @@ import { FormGroup, FormControl } from '@angular/forms';
   selector: 'basics',
   templateUrl: './basics.html'
 })
-export class BasicsComponent {
+export class BasicsComponent implements OnDestroy {
   subscriptions: Subscription[] = [];
 
   testData$: BehaviorSubject<RemoteData<string>>;
@@ -27,12 +27,12 @@ export class BasicsComponent {
   constructor() {
     // Single observable source example
     const map: { [key: string]: RemoteData<string> } = {
-      notAsked: new NotAsked(),
-      inProgress: new InProgress(),
-      success: new Success('Ok ' + Math.round(1000 * Math.random()).toString()),
-      failure: new Failure('Ouch!')
+      notAsked: NotAsked.of(),
+      inProgress: InProgress.of(''),
+      success: Success.of('Ok ' + Math.round(1000 * Math.random()).toString()),
+      failure: Failure.of('Ouch!')
     };
-    this.testData$ = new BehaviorSubject(new NotAsked());
+    this.testData$ = new BehaviorSubject(NotAsked.of());
     const testDataRadioGroup = new FormControl();
     this.radiogroupForm = new FormGroup({
       testDataRadioGroup
@@ -44,9 +44,9 @@ export class BasicsComponent {
     );
 
     // Multiple observable sources example
-    this.inProgress1$ = new BehaviorSubject(new NotAsked());
-    this.inProgress2$ = new BehaviorSubject(new NotAsked());
-    this.inProgress3$ = new BehaviorSubject(new NotAsked());
+    this.inProgress1$ = new BehaviorSubject(NotAsked.of());
+    this.inProgress2$ = new BehaviorSubject(NotAsked.of());
+    this.inProgress3$ = new BehaviorSubject(NotAsked.of());
     const check1 = new FormControl();
     const check2 = new FormControl();
     const check3 = new FormControl();
@@ -58,18 +58,18 @@ export class BasicsComponent {
     this.subscriptions.push(
       check1.valueChanges.subscribe((checked: boolean) => {
         checked
-          ? this.inProgress1$.next(new InProgress())
-          : this.inProgress1$.next(new NotAsked());
+          ? this.inProgress1$.next(InProgress.of(''))
+          : this.inProgress1$.next(NotAsked.of());
       }),
       check2.valueChanges.subscribe((checked: boolean) => {
         checked
-          ? this.inProgress2$.next(new InProgress())
-          : this.inProgress2$.next(new NotAsked());
+          ? this.inProgress2$.next(InProgress.of(''))
+          : this.inProgress2$.next(NotAsked.of());
       }),
       check3.valueChanges.subscribe((checked: boolean) => {
         checked
-          ? this.inProgress3$.next(new InProgress())
-          : this.inProgress3$.next(new NotAsked());
+          ? this.inProgress3$.next(InProgress.of(''))
+          : this.inProgress3$.next(NotAsked.of());
       })
     );
   }

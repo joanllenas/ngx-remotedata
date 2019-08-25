@@ -20,20 +20,20 @@ export class PosService {
   meow$: BehaviorSubject<RemoteData<CatImage>>;
 
   constructor(private meowService: MeowService) {
-    this.meow$ = new BehaviorSubject<RemoteData<CatImage>>(new NotAsked());
+    this.meow$ = new BehaviorSubject<RemoteData<CatImage>>(NotAsked.of());
   }
 
   meow() {
-    this.meow$.next(new InProgress(oldValue(this.meow$)));
+    this.meow$.next(InProgress.of(oldValue(this.meow$)));
     this.meowService
       .meow()
-      .subscribe(catImage => this.meow$.next(new Success(catImage)));
+      .subscribe(catImage => this.meow$.next(Success.of(catImage)));
   }
 
   meowFail() {
-    this.meow$.next(new InProgress(oldValue(this.meow$)));
+    this.meow$.next(InProgress.of(oldValue(this.meow$)));
     this.meowService
       .meow()
-      .subscribe(_ => this.meow$.next(new Failure('Something wrong happened')));
+      .subscribe(_ => this.meow$.next(Failure.of('Something wrong happened')));
   }
 }
