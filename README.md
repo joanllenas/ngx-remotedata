@@ -90,22 +90,22 @@ import { InProgress, NotAsked, Success, Failure } from 'ngx-remotedata';
   templateUrl: './app.component.html'
 })
 export class AppComponent {
-  remoteData = new NotAsked();
+  remoteData: RemoteData<string> = NotAsked.of();
 
   setNotAsked() {
-    this.remoteData = new NotAsked();
+    this.remoteData = NotAsked.of();
   }
 
   setInProgress() {
-    this.remoteData = new InProgress();
+    this.remoteData = InProgress.of('In progress...');
   }
 
   setSuccess() {
-    this.remoteData = new Success('ok');
+    this.remoteData = Success.of('Success!');
   }
 
   setFailure() {
-    this.remoteData = new Failure('ko');
+    this.remoteData = Failure.of('Wrong!');
   }
 }
 ```
@@ -155,11 +155,21 @@ export class AppComponent {
 
 When a `RemoteData` is an instance of the `NotAsked` class, it means that the request hasn't been made yet.
 
+```ts
+type User = { email: string };
+const remoteData: RemoteData<User> = NotAsked.of();
+```
+
 ### InProgress
 
 `InProgress<T>`
 
 When a `RemoteData` is an instance of the `InProgress` class, it means that the request has been made, but it hasn't returned any data yet. The `InProgress` class can contain a value of the same `T` type as the `Success` class. Useful when you want to use the last `Success` value while the new data is being fetched.
+
+```ts
+type User = { email: string };
+const remoteData: RemoteData<User> = InProgress.of({ email: 'john@doe.com' });
+```
 
 ### Success
 
@@ -167,11 +177,30 @@ When a `RemoteData` is an instance of the `InProgress` class, it means that the 
 
 When a `RemoteData` is an instance of the `Success` class, it means that the request has completed successfully and the new data (of type `T`) is available.
 
+```ts
+type User = { email: string };
+const remoteData: RemoteData<User> = Success.of({ email: 'john@doe.com' });
+```
+
 ### Failure
 
 `Failure<E>`
 
 When a `RemoteData` is an instance of the `Failure` class, it means that the request has failed. You can get the error information (of type `E`) from the payload.
+
+```ts
+type User = { email: string };
+const remoteData: RemoteData<User> = Failure.of('Something went wrong.');
+```
+
+The default type for errors is `string`, but you can also provide other types like `Error`:
+
+```ts
+type User = { email: string };
+const remoteData: RemoteData<User, Error> = Failure.of(
+  new Error('Something went wrong.')
+);
+```
 
 ## Pipes
 
