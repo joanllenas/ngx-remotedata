@@ -49,4 +49,4 @@ export type RemoteData<T, E = string> =
   | Failure<E>
   | Success<T>;
 
-export type AnyRemoteData = RemoteData<any>;
+export type AnyRemoteData = RemoteData<any, any>;
