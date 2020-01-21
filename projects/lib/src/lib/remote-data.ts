@@ -1,7 +1,14 @@
 type DefaultError = string;
 
+export const RemoteDataTags = {
+  NotAsked: 'NotAsked',
+  InProgress: 'InProgress',
+  Failure: 'Failure',
+  Success: 'Success'
+} as const;
+
 export class NotAsked {
-  private tag = 'NotAsked';
+  private tag = RemoteDataTags.NotAsked;
   private constructor() {}
   static of<T, E = DefaultError>(): RemoteData<T, E> {
     return new NotAsked();
@@ -9,7 +16,7 @@ export class NotAsked {
 }
 
 export class InProgress<T> {
-  private tag = 'InProgress';
+  private tag = RemoteDataTags.InProgress;
   private constructor(private val: T) {}
   static of<T, E = DefaultError>(value: T): RemoteData<T, E> {
     return new InProgress(value);
@@ -20,7 +27,7 @@ export class InProgress<T> {
 }
 
 export class Failure<E> {
-  private tag = 'Failure';
+  private tag = RemoteDataTags.Failure;
   private constructor(private err: E) {}
   static of<T, E = DefaultError>(err: E): RemoteData<T, E> {
     return new Failure(err);
@@ -31,7 +38,7 @@ export class Failure<E> {
 }
 
 export class Success<T> {
-  private tag = 'Success';
+  private tag = RemoteDataTags.Success;
   private constructor(private val: T) {}
   static of<T, E = DefaultError>(value: T): RemoteData<T, E> {
     return new Success(value);

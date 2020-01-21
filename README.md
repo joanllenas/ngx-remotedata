@@ -136,7 +136,7 @@ export class AppComponent {
 
 - [The basics](src/app/examples/basics)
 - [Plain old services](src/app/examples/pos)
-- [Ngrx](src/app/examples/ngrx)
+- [Ngrx (includes store rehydration with de/serialization)](src/app/examples/ngrx)
 
 ## Api
 
