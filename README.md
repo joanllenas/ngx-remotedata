@@ -234,6 +234,12 @@ Returns true when `RemoteData` is a `Failure` instance.
 
 Returns true when `RemoteData` is a `Success` instance.
 
+### hasValue
+
+`hasValue | RemoteData<any> : boolean`
+
+Returns true when `RemoteData` is a `Success` instance or is `InProgress` instance with a value that is not `null` nor `undefined`.
+
 ### successValue
 
 `successValue | RemoteData<T> : (T | undefined)`
@@ -245,6 +251,12 @@ Returns the `Success` payload (of type `T`) when `RemoteData` is a `Success` ins
 `inProgressValue | RemoteData<T> : (T | undefined)`
 
 Returns the `InProgress` payload (of type `T`) when `RemoteData` is a `InProgress` instance or `undefined` instead.
+
+### successOrInProgressValue
+
+`successOrInProgressValue | RemoteData<T> : (T | undefined)`
+
+Returns the `InProgress` or `Success` payload (of type `T`) when `RemoteData` is a `InProgress` or `Success` instance, returns `undefined` otherwise.
 
 ### failureValue
 
