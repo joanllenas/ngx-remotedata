@@ -4,7 +4,7 @@ import {
   IsFailurePipe,
   IsSuccessPipe,
   HasValuePipe,
-  GetSuccessOrProgressValuePipe
+  GetSuccessOrInProgressValuePipe
 } from './pipes';
 import { PipeTransform } from '@angular/core';
 import {
@@ -78,12 +78,12 @@ describe('Boolean Pipes', () => {
   describe('Value Pipes', () => {
     ([
       {
-        PipeClass: GetSuccessOrProgressValuePipe,
+        PipeClass: GetSuccessOrInProgressValuePipe,
         rd: InProgress.of(false),
         value: false
       },
       {
-        PipeClass: GetSuccessOrProgressValuePipe,
+        PipeClass: GetSuccessOrInProgressValuePipe,
         rd: Success.of('tryit'),
         value: 'tryit'
       }

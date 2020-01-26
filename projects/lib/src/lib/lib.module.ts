@@ -8,7 +8,7 @@ import {
   GetSuccessPipe,
   GetFailurePipe,
   GetInProgressPipe,
-  GetSuccessOrProgressValuePipe,
+  GetSuccessOrInProgressValuePipe,
   AnyIsInProgressPipe
 } from './pipes';
 
@@ -21,7 +21,7 @@ const declarations = [
   GetSuccessPipe,
   GetFailurePipe,
   GetInProgressPipe,
-  GetSuccessOrProgressValuePipe,
+  GetSuccessOrInProgressValuePipe,
   AnyIsInProgressPipe
 ];
 
