@@ -95,6 +95,24 @@ export class IsSuccessPipe implements PipeTransform {
   }
 }
 
+@Pipe({ name: 'hasValue' })
+export class HasValuePipe implements PipeTransform {
+  transform(rd: AnyRemoteData): boolean {
+    assertIsRemoteData(rd);
+    if (rd instanceof Success) {
+      return true;
+    } else if (
+      rd instanceof InProgress &&
+      rd.value() !== null &&
+      rd.value() !== undefined
+    ) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+}
+
 @Pipe({ name: 'successValue' })
 export class GetSuccessPipe implements PipeTransform {
   transform(rd: AnyRemoteData): any {
@@ -108,6 +126,16 @@ export class GetInProgressPipe implements PipeTransform {
   transform(rd: AnyRemoteData): any {
     assertIsRemoteData(rd);
     return rd instanceof InProgress ? rd.value() : undefined;
+  }
+}
+
+@Pipe({ name: 'successOrInProgressValue' })
+export class GetSuccessOrInProgressValuePipe implements PipeTransform {
+  transform(rd: AnyRemoteData): any {
+    assertIsRemoteData(rd);
+    return rd instanceof InProgress || rd instanceof Success
+      ? rd.value()
+      : undefined;
   }
 }
 
