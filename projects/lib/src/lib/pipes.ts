@@ -102,7 +102,7 @@ export class HasValuePipe implements PipeTransform {
     if (rd instanceof Success) {
       return true;
     } else if (
-      rd instanceof InProgress &&
+      (rd instanceof InProgress || rd instanceof Failure) &&
       rd.value() !== null &&
       rd.value() !== undefined
     ) {
@@ -129,18 +129,28 @@ export class GetInProgressPipe implements PipeTransform {
   }
 }
 
-@Pipe({ name: 'successOrInProgressValue' })
-export class GetSuccessOrInProgressValuePipe implements PipeTransform {
+@Pipe({ name: 'remoteDataValue' })
+export class GetRemoteDataPipe implements PipeTransform {
   transform(rd: AnyRemoteData): any {
     assertIsRemoteData(rd);
-    return rd instanceof InProgress || rd instanceof Success
+    return rd instanceof InProgress ||
+      rd instanceof Success ||
+      rd instanceof Failure
       ? rd.value()
       : undefined;
   }
 }
 
+@Pipe({ name: 'failureError' })
+export class GetFailureErrorPipe implements PipeTransform {
+  transform(rd: AnyRemoteData): any {
+    assertIsRemoteData(rd);
+    return rd instanceof Failure ? rd.error() : undefined;
+  }
+}
+
 @Pipe({ name: 'failureValue' })
-export class GetFailurePipe implements PipeTransform {
+export class GetFailureValuePipe implements PipeTransform {
   transform(rd: AnyRemoteData): any {
     assertIsRemoteData(rd);
     return rd instanceof Failure ? rd.value() : undefined;

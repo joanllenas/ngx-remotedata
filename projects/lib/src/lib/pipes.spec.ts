@@ -4,7 +4,7 @@ import {
   IsFailurePipe,
   IsSuccessPipe,
   HasValuePipe,
-  GetSuccessOrInProgressValuePipe
+  GetRemoteDataPipe
 } from './pipes';
 import { PipeTransform } from '@angular/core';
 import {
@@ -29,18 +29,18 @@ describe('Boolean Pipes', () => {
     },
     {
       PipeClass: IsFailurePipe,
-      rd: Failure.of('Ouch'),
+      rd: Failure.of('Ouch', ''),
       rdBad: InProgress.of(null)
     },
     {
       PipeClass: IsSuccessPipe,
       rd: Success.of('ok'),
-      rdBad: Failure.of('grrrr')
+      rdBad: Failure.of('grrrr', '')
     },
     {
       PipeClass: HasValuePipe,
       rd: Success.of('ok'),
-      rdBad: Failure.of('grrrr')
+      rdBad: Failure.of('grrrr', '')
     },
     {
       PipeClass: HasValuePipe,
@@ -78,12 +78,12 @@ describe('Boolean Pipes', () => {
   describe('Value Pipes', () => {
     ([
       {
-        PipeClass: GetSuccessOrInProgressValuePipe,
+        PipeClass: GetRemoteDataPipe,
         rd: InProgress.of(false),
         value: false
       },
       {
-        PipeClass: GetSuccessOrInProgressValuePipe,
+        PipeClass: GetRemoteDataPipe,
         rd: Success.of('tryit'),
         value: 'tryit'
       }

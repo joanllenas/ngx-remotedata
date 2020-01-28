@@ -22,7 +22,9 @@ describe('RemoteData', () => {
   describe('Failure', () => {
     it('should be able to extract the wrapped error', () => {
       const err = 'Ouch!';
-      expect((Failure.of(err) as Failure<string>).value()).toBe(err);
+      expect((Failure.of(err, '') as Failure<string, string>).error()).toBe(
+        err
+      );
     });
   });
 });
