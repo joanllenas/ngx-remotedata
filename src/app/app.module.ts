@@ -47,7 +47,7 @@ export function localStorageSyncReducer(
             },
             {
               matcher: (tag: string) => tag === RemoteDataTags.Failure,
-              mapper: () => Failure.of(json.err)
+              mapper: () => Failure.of(json.err, json.val)
             },
             {
               matcher: (tag: string) => tag === RemoteDataTags.Success,

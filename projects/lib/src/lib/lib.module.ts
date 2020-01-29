@@ -9,7 +9,7 @@ import {
   GetFailureErrorPipe,
   GetFailureValuePipe,
   GetInProgressPipe,
-  GetRemoteDataPipe,
+  GetRemoteDataValuePipe,
   AnyIsInProgressPipe
 } from './pipes';
 
@@ -23,7 +23,7 @@ const declarations = [
   GetFailureErrorPipe,
   GetFailureValuePipe,
   GetInProgressPipe,
-  GetRemoteDataPipe,
+  GetRemoteDataValuePipe,
   AnyIsInProgressPipe
 ];
 

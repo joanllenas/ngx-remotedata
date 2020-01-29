@@ -17,11 +17,11 @@ export class NotAsked {
 
 export class InProgress<T> {
   private tag = RemoteDataTags.InProgress;
-  private constructor(private val: T) {}
-  static of<T, E = DefaultError>(value: T): RemoteData<T, E> {
+  private constructor(private val?: T) {}
+  static of<T, E = DefaultError>(value?: T): RemoteData<T, E> {
     return new InProgress(value);
   }
-  value(): T {
+  value(): T | undefined {
     return this.val;
   }
 }
@@ -30,18 +30,10 @@ export class Failure<E, T> {
   private tag = RemoteDataTags.Failure;
   private constructor(private err: E, private val?: T) {}
   static of<T, E = DefaultError>(err: E, val?: T): RemoteData<T, E> {
-    if (val) {
-      return new Failure(err, val);
-    } else {
-      return new Failure(err);
-    }
+    return new Failure(err, val);
   }
   value(): T | undefined {
-    if (this.val) {
-      return this.val;
-    } else {
-      return undefined;
-    }
+    return this.val;
   }
   error(): E {
     return this.err;

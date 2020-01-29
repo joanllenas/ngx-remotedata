@@ -130,7 +130,7 @@ export class GetInProgressPipe implements PipeTransform {
 }
 
 @Pipe({ name: 'remoteDataValue' })
-export class GetRemoteDataPipe implements PipeTransform {
+export class GetRemoteDataValuePipe implements PipeTransform {
   transform(rd: AnyRemoteData): any {
     assertIsRemoteData(rd);
     return rd instanceof InProgress ||
