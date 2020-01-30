@@ -58,7 +58,7 @@
     </h5>
     <!-- Failure -->
     <h5 *ngIf="(testData$ | async | isFailure)" class="red">
-      Failure({{ testData$ | async | failureValue }})
+      Failure({{ testData$ | async | failureError }})
     </h5>
   </div>
 </div>

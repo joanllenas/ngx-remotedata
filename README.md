@@ -52,10 +52,10 @@ Our template will have to use complex `*ngIf` statements to make sure that we ar
 Instead of using a complex object we use a single data type to express all possible request states:
 
 ```ts
-export type RemoteData<T, E = string> =
+type RemoteData<T, E = string> =
   | NotAsked
   | InProgress<T>
-  | Failure<E>
+  | Failure<E, T>
   | Success<T>;
 ```
 
@@ -184,9 +184,10 @@ const remoteData: RemoteData<User> = Success.of({ email: 'john@doe.com' });
 
 ### Failure
 
-`Failure<E>`
+`Failure<E, T>`
 
-When a `RemoteData` is an instance of the `Failure` class, it means that the request has failed. You can get the error information (of type `E`) from the payload.
+When a `RemoteData` is an instance of the `Failure` class, it means that the request has failed. You can get the error information (of type `E`) from the payload and.
+As with the `InProgress` class, `Failure` can optionally contain a value of the same `T` type as the `Success` class. Useful when you want to use the last `Success` value while displaying the failure message.
 
 ```ts
 type User = { email: string };
@@ -238,7 +239,7 @@ Returns true when `RemoteData` is a `Success` instance.
 
 `hasValue | RemoteData<any> : boolean`
 
-Returns true when `RemoteData` is a `Success` instance or is `InProgress` instance with a value that is not `null` nor `undefined`.
+Returns true when `RemoteData` is a `Success` instance or is a `InProgress` or `Failure` instance with a value that is not `null` nor `undefined`.
 
 ### successValue
 
@@ -252,14 +253,20 @@ Returns the `Success` payload (of type `T`) when `RemoteData` is a `Success` ins
 
 Returns the `InProgress` payload (of type `T`) when `RemoteData` is a `InProgress` instance or `undefined` instead.
 
-### successOrInProgressValue
+### remoteDataValue
 
-`successOrInProgressValue | RemoteData<T> : (T | undefined)`
+`remoteDataValue | RemoteData<T> : (T | undefined)`
 
-Returns the `InProgress` or `Success` payload (of type `T`) when `RemoteData` is a `InProgress` or `Success` instance, returns `undefined` otherwise.
+Returns the `InProgress`, `Failure` or `Success` payload (of type `T`) when `RemoteData` is an `InProgress`, `Failure` or `Success` instance, returns `undefined` otherwise.
+
+### failureError
+
+`failureError | RemoteData<T, E> : (E | undefined)`
+
+Returns the `Failure` error payload (of type `E`) when `RemoteData` is a `Failure` instance or `undefined` instead.
 
 ### failureValue
 
-`failureValue | RemoteData<T, E> : (E | undefined)`
+`failureValue | RemoteData<T, E> : (T | undefined)`
 
-Returns the `Failure` payload (of type `E`) when `RemoteData` is a `Failure` instance or `undefined` instead.
+Returns the `Failure` payload (of type `T`) when `RemoteData` is a `Failure` instance or `undefined` instead.
