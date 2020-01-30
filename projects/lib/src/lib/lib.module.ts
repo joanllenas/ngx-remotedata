@@ -6,9 +6,10 @@ import {
   IsSuccessPipe,
   HasValuePipe,
   GetSuccessPipe,
-  GetFailurePipe,
+  GetFailureErrorPipe,
+  GetFailureValuePipe,
   GetInProgressPipe,
-  GetSuccessOrInProgressValuePipe,
+  GetRemoteDataValuePipe,
   AnyIsInProgressPipe
 } from './pipes';
 
@@ -19,9 +20,10 @@ const declarations = [
   IsSuccessPipe,
   HasValuePipe,
   GetSuccessPipe,
-  GetFailurePipe,
+  GetFailureErrorPipe,
+  GetFailureValuePipe,
   GetInProgressPipe,
-  GetSuccessOrInProgressValuePipe,
+  GetRemoteDataValuePipe,
   AnyIsInProgressPipe
 ];
 

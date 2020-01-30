@@ -17,22 +17,25 @@ export class NotAsked {
 
 export class InProgress<T> {
   private tag = RemoteDataTags.InProgress;
-  private constructor(private val: T) {}
-  static of<T, E = DefaultError>(value: T): RemoteData<T, E> {
+  private constructor(private val?: T) {}
+  static of<T, E = DefaultError>(value?: T): RemoteData<T, E> {
     return new InProgress(value);
   }
-  value(): T {
+  value(): T | undefined {
     return this.val;
   }
 }
 
-export class Failure<E> {
+export class Failure<E, T> {
   private tag = RemoteDataTags.Failure;
-  private constructor(private err: E) {}
-  static of<T, E = DefaultError>(err: E): RemoteData<T, E> {
-    return new Failure(err);
+  private constructor(private err: E, private val?: T) {}
+  static of<T, E = DefaultError>(err: E, val?: T): RemoteData<T, E> {
+    return new Failure(err, val);
   }
-  value(): E {
+  value(): T | undefined {
+    return this.val;
+  }
+  error(): E {
     return this.err;
   }
 }
@@ -53,7 +56,7 @@ export class Success<T> {
 export type RemoteData<T, E = string> =
   | NotAsked
   | InProgress<T>
-  | Failure<E>
+  | Failure<E, T>
   | Success<T>;
 
 export type AnyRemoteData = RemoteData<any, any>;
