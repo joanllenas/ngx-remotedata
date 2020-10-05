@@ -1,6 +1,29 @@
 {
   "name": "ngx-remotedata",
-  "version": "3.0.0",
+  "version": "3.0.3",
+  "description": "RemoteData: Slaying a UI Antipattern with Angular",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/joanllenas/ngx-remotedata"
+  },
+  "keywords": [
+    "angular",
+    "ngx",
+    "angular2",
+    "ng2",
+    "pipes",
+    "remote-data",
+    "elm"
+  ],
+  "author": {
+    "name": "Joan Llenas Masó",
+    "email": "joan.llenas.maso@gmail.com",
+    "url": "http://joanllenas.com"
+  },
+  "bugs": {
+    "url": "https://github.com/joanllenas/ngx-remotedata/issues"
+  },
+  "homepage": "https://github.com/joanllenas/ngx-remotedata#readme",
   "peerDependencies": {
     "@angular/common": ">=6",
     "@angular/core": ">=6"
