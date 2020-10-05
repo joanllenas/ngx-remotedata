@@ -6,6 +6,7 @@
     "type": "git",
     "url": "https://github.com/joanllenas/ngx-remotedata"
   },
+  "private": true,
   "keywords": [
     "angular",
     "ngx",
