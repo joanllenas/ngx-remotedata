@@ -10,7 +10,8 @@ import {
   GetFailureValuePipe,
   GetInProgressPipe,
   GetRemoteDataValuePipe,
-  AnyIsInProgressPipe
+  AnyIsInProgressPipe,
+  AnyIsNotAskedPipe
 } from './pipes';
 
 const declarations = [
@@ -24,7 +25,8 @@ const declarations = [
   GetFailureValuePipe,
   GetInProgressPipe,
   GetRemoteDataValuePipe,
-  AnyIsInProgressPipe
+  AnyIsInProgressPipe,
+  AnyIsNotAskedPipe
 ];
 
 @NgModule({

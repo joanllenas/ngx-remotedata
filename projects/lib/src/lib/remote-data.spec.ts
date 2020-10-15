@@ -20,11 +20,12 @@ describe('RemoteData', () => {
   });
 
   describe('Failure', () => {
-    it('should be able to extract the wrapped error', () => {
+    it('should be able to extract the wrapped error and value', () => {
       const err = 'Ouch!';
-      expect((Failure.of(err, '') as Failure<string, string>).error()).toBe(
-        err
-      );
+      const value = { type: 'DoStuff' };
+      const f = Failure.of(err, value) as Failure<string, typeof value>;
+      expect(f.error()).toBe(err);
+      expect(f.value()).toBe(value);
     });
   });
 });
