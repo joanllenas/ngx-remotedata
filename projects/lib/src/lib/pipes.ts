@@ -79,6 +79,41 @@ export class AnyIsInProgressPipe implements PipeTransform, OnDestroy {
   }
 }
 
+@Pipe({ name: 'anyIsNotAsked', pure: false })
+export class AnyIsNotAskedPipe implements PipeTransform, OnDestroy {
+  private _latestValue = false;
+  private _subscription: Subscription | null = null;
+  private _rds$: Observable<AnyRemoteData>[] = [];
+
+  constructor(private cd: ChangeDetectorRef) {}
+
+  transform(rds$: Observable<AnyRemoteData>[]): boolean {
+    if (this._rds$ === rds$) {
+      return this._latestValue;
+    } else if (this._subscription) {
+      this.dispose();
+    }
+    this._rds$ = rds$;
+    this._subscription = combineLatest(rds$).subscribe(rds => {
+      this._latestValue = rds.some(rd => rd instanceof NotAsked);
+      this.cd.markForCheck();
+    });
+    return this._latestValue;
+  }
+
+  ngOnDestroy(): void {
+    this.dispose();
+  }
+
+  dispose(): void {
+    if (this._subscription) {
+      this._subscription.unsubscribe();
+    }
+    this._rds$ = [];
+    this._latestValue = false;
+  }
+}
+
 @Pipe({ name: 'isFailure' })
 export class IsFailurePipe implements PipeTransform {
   transform(rd: AnyRemoteData): boolean {

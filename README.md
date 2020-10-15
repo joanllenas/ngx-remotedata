@@ -209,49 +209,55 @@ const remoteData: RemoteData<User, Error> = Failure.of(
 
 `isNotAsked | RemoteData<any> : boolean`
 
-Returns true when `RemoteData` is a `NotAsked` instance.
+Returns `true` when `RemoteData` is a `NotAsked` instance.
+
+### anyIsNotAsked
+
+`anyIsNotAsked | Observable<RemoteData<any>>[] : boolean`
+
+Returns `true` when any `RemoteData<any>[]` item is a `NotAsked` instance.
 
 ### isInProgress
 
 `isInProgress | RemoteData<any> : boolean`
 
-Returns true when `RemoteData` is a `InProgress` instance.
+Returns `true` when `RemoteData` is an `InProgress` instance.
 
 ### anyIsInProgress
 
 `anyIsInProgress | Observable<RemoteData<any>>[] : boolean`
 
-Returns true when any item in `RemoteData[]` is a `InProgress` instance.
+Returns `true` when any `RemoteData<any>[]` item is an `InProgress` instance.
 
 ### isFailure
 
 `isFailure | RemoteData<any> : boolean`
 
-Returns true when `RemoteData` is a `Failure` instance.
+Returns `true` when `RemoteData` is a `Failure` instance.
 
 ### isSuccess
 
 `isSuccess | RemoteData<any> : boolean`
 
-Returns true when `RemoteData` is a `Success` instance.
+Returns `true` when `RemoteData` is a `Success` instance.
 
 ### hasValue
 
 `hasValue | RemoteData<any> : boolean`
 
-Returns true when `RemoteData` is a `Success` instance or is a `InProgress` or `Failure` instance with a value that is not `null` nor `undefined`.
+Returns `true` when `RemoteData` is a `Success` instance or is an `InProgress` or `Failure` instance with a value that is not `null` or `undefined`.
 
 ### successValue
 
 `successValue | RemoteData<T> : (T | undefined)`
 
-Returns the `Success` payload (of type `T`) when `RemoteData` is a `Success` instance or `undefined` instead.
+Returns the `Success` payload (of type `T`) when `RemoteData` is a `Success` instance or `undefined` otherwise.
 
 ### inProgressValue
 
 `inProgressValue | RemoteData<T> : (T | undefined)`
 
-Returns the `InProgress` payload (of type `T`) when `RemoteData` is a `InProgress` instance or `undefined` instead.
+Returns the `InProgress` payload (of type `T`) when `RemoteData` is an `InProgress` instance or `undefined` otherwise.
 
 ### remoteDataValue
 
@@ -263,10 +269,10 @@ Returns the `InProgress`, `Failure` or `Success` payload (of type `T`) when `Rem
 
 `failureError | RemoteData<T, E> : (E | undefined)`
 
-Returns the `Failure` error payload (of type `E`) when `RemoteData` is a `Failure` instance or `undefined` instead.
+Returns the `Failure` error payload (of type `E`) when `RemoteData` is a `Failure` instance or `undefined` otherwise.
 
 ### failureValue
 
 `failureValue | RemoteData<T, E> : (T | undefined)`
 
-Returns the `Failure` payload (of type `T`) when `RemoteData` is a `Failure` instance or `undefined` instead.
+Returns the `Failure` payload (of type `T`) when `RemoteData` is a `Failure` instance or `undefined` otherwise.

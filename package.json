@@ -1,6 +1,6 @@
 {
   "name": "ngx-remotedata",
-  "version": "3.0.3",
+  "version": "3.1.0",
   "description": "RemoteData: Slaying a UI Antipattern with Angular",
   "repository": {
     "type": "git",
@@ -27,11 +27,13 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
+    "build:app": "ng build",
     "build": "ng build lib",
     "test": "ng test lib",
     "lint": "ng lint lib",
     "e2e": "ng e2e",
-    "release": "npm run build && npm publish 'dist/lib'"
+    "sync": "cp ./README.md ./dist/lib && sync-json -v --property version --source package.json dist/lib/package.json",
+    "release": "npm run build && npm run sync && npm publish 'dist/lib'"
   },
   "dependencies": {
     "@angular/animations": "~9.1.12",
@@ -69,6 +71,7 @@
     "ng-packagr": "^9.0.0",
     "prettier": "^1.19.1",
     "protractor": "~5.4.0",
+    "sync-json": "^1.0.2",
     "ts-node": "~7.0.0",
     "tslint": "~5.15.0",
     "typescript": "~3.8.3"
