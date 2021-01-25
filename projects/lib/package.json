@@ -24,6 +24,9 @@
     "url": "https://github.com/joanllenas/ngx-remotedata/issues"
   },
   "homepage": "https://github.com/joanllenas/ngx-remotedata#readme",
+  "dependencies": {
+    "tslib": "^2.0.0"
+  },
   "peerDependencies": {
     "@angular/common": ">=6",
     "@angular/core": ">=6"
