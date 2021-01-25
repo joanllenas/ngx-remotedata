@@ -9,6 +9,7 @@ import {
   Failure,
   InProgress,
   NotAsked,
+  RemoteData,
   Success
 } from './remote-data';
 import { Observable, combineLatest, Subscription } from 'rxjs';
@@ -150,7 +151,7 @@ export class HasValuePipe implements PipeTransform {
 
 @Pipe({ name: 'successValue' })
 export class GetSuccessPipe implements PipeTransform {
-  transform(rd: AnyRemoteData): any {
+  transform<T, E>(rd: RemoteData<T, E>): T | undefined {
     assertIsRemoteData(rd);
     return rd instanceof Success ? rd.value() : undefined;
   }
@@ -158,7 +159,7 @@ export class GetSuccessPipe implements PipeTransform {
 
 @Pipe({ name: 'inProgressValue' })
 export class GetInProgressPipe implements PipeTransform {
-  transform(rd: AnyRemoteData): any {
+  transform<T, E>(rd: RemoteData<T, E>): T | undefined {
     assertIsRemoteData(rd);
     return rd instanceof InProgress ? rd.value() : undefined;
   }
@@ -166,7 +167,7 @@ export class GetInProgressPipe implements PipeTransform {
 
 @Pipe({ name: 'remoteDataValue' })
 export class GetRemoteDataValuePipe implements PipeTransform {
-  transform(rd: AnyRemoteData): any {
+  transform<T, E>(rd: RemoteData<T, E>): T | E | undefined {
     assertIsRemoteData(rd);
     return rd instanceof InProgress ||
       rd instanceof Success ||
@@ -178,7 +179,7 @@ export class GetRemoteDataValuePipe implements PipeTransform {
 
 @Pipe({ name: 'failureError' })
 export class GetFailureErrorPipe implements PipeTransform {
-  transform(rd: AnyRemoteData): any {
+  transform<T, E>(rd: RemoteData<T, E>): E | undefined {
     assertIsRemoteData(rd);
     return rd instanceof Failure ? rd.error() : undefined;
   }
@@ -186,7 +187,7 @@ export class GetFailureErrorPipe implements PipeTransform {
 
 @Pipe({ name: 'failureValue' })
 export class GetFailureValuePipe implements PipeTransform {
-  transform(rd: AnyRemoteData): any {
+  transform<T, E>(rd: RemoteData<T, E>): T | undefined {
     assertIsRemoteData(rd);
     return rd instanceof Failure ? rd.value() : undefined;
   }
