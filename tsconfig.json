@@ -20,11 +20,8 @@
       "dom"
     ],
     "paths": {
-      "lib": [
-        "dist/lib"
-      ],
-      "lib/*": [
-        "dist/lib/*"
+      "ngx-remotedata": [
+        "projects/lib/src/public_api.ts"
       ]
     }
   },

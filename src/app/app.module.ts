@@ -17,13 +17,13 @@ import { PosService } from './examples/pos/pos.service';
 import { MeowEffects } from './examples/ngrx/store/effects';
 import { BasicsComponent } from './examples/basics/basics.component';
 import {
-  NotAsked,
-  InProgress,
-  Failure,
-  Success,
+  notAsked,
+  inProgress,
+  failure,
+  success,
   RemoteDataTags,
   RemoteData
-} from '../../projects/lib/src/lib/remote-data';
+} from 'ngx-remotedata';
 import { localStorageSync } from './examples/ngrx/store/local-store-sync';
 
 export function localStorageSyncReducer(
@@ -35,29 +35,33 @@ export function localStorageSyncReducer(
     keys: {
       meow: {
         serialize: (rd: RemoteData<any>) => rd,
-        deserialize: (json: { tag: string; err: any; val: any }) => {
+        deserialize: (json: {
+          tag: RemoteData<any>['tag'];
+          err: any;
+          val: any;
+        }) => {
           const rd = [
             {
-              matcher: (tag: string) => tag === RemoteDataTags.NotAsked,
-              mapper: () => NotAsked.of()
+              matcher: (tag: RemoteData<any>['tag']) => tag === 'NotAsked',
+              mapper: () => notAsked()
             },
             {
-              matcher: (tag: string) => tag === RemoteDataTags.InProgress,
-              mapper: () => InProgress.of(json.val)
+              matcher: (tag: RemoteData<any>['tag']) => tag === 'InProgress',
+              mapper: () => inProgress(json.val)
             },
             {
-              matcher: (tag: string) => tag === RemoteDataTags.Failure,
-              mapper: () => Failure.of(json.err, json.val)
+              matcher: (tag: RemoteData<any>['tag']) => tag === 'Failure',
+              mapper: () => failure(json.err, json.val)
             },
             {
-              matcher: (tag: string) => tag === RemoteDataTags.Success,
-              mapper: () => Success.of(json.val)
+              matcher: (tag: RemoteData<any>['tag']) => tag === 'Success',
+              mapper: () => success(json.val)
             }
           ]
             .filter(matchMap => matchMap.matcher(json.tag))
             .map(matchMap => matchMap.mapper())
             .pop();
-          return rd || NotAsked.of();
+          return rd || notAsked();
         }
       }
     }

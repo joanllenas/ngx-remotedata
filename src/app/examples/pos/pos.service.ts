@@ -3,16 +3,17 @@ import { MeowService, CatImage } from '../../services/meow.service';
 import { BehaviorSubject, Observable } from 'rxjs';
 import {
   RemoteData,
-  NotAsked,
-  Success,
-  InProgress,
-  Failure
-} from '../../../../projects/lib/src/lib/remote-data';
+  notAsked,
+  success,
+  inProgress,
+  failure,
+  isSuccess
+} from 'ngx-remotedata';
 
 const oldValue = (obs$: Observable<RemoteData<CatImage>>) => {
-  let value: unknown;
+  let value: RemoteData<CatImage> | undefined;
   obs$.subscribe(rd => (value = rd));
-  return value instanceof Success ? value.value() : undefined;
+  return isSuccess(value) ? value.value() : undefined;
 };
 
 @Injectable()
@@ -20,20 +21,20 @@ export class PosService {
   meow$: BehaviorSubject<RemoteData<CatImage>>;
 
   constructor(private meowService: MeowService) {
-    this.meow$ = new BehaviorSubject<RemoteData<CatImage>>(NotAsked.of());
+    this.meow$ = new BehaviorSubject<RemoteData<CatImage>>(notAsked());
   }
 
   meow() {
-    this.meow$.next(InProgress.of(oldValue(this.meow$)));
+    this.meow$.next(inProgress(oldValue(this.meow$)));
     this.meowService
       .meow()
-      .subscribe(catImage => this.meow$.next(Success.of(catImage)));
+      .subscribe(catImage => this.meow$.next(success(catImage)));
   }
 
   meowFail() {
-    this.meow$.next(InProgress.of(oldValue(this.meow$)));
+    this.meow$.next(inProgress(oldValue(this.meow$)));
     this.meowService
       .meow()
-      .subscribe(_ => this.meow$.next(Failure.of('Something wrong happened')));
+      .subscribe(_ => this.meow$.next(failure('Something wrong happened')));
   }
 }

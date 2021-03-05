@@ -1,4 +1,4 @@
-import { RemoteData } from '../../../../../projects/lib/src/lib/remote-data';
+import { RemoteData } from 'ngx-remotedata';
 import { CatImage } from '../../../services/meow.service';
 import { InjectionToken } from '@angular/core';
 import { ActionReducerMap } from '@ngrx/store';

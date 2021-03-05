@@ -1,6 +1,6 @@
 {
   "name": "ngx-remotedata",
-  "version": "5.0.0-beta",
+  "version": "5.0.1-beta",
   "description": "RemoteData: Slaying a UI Antipattern with Angular",
   "repository": {
     "type": "git",

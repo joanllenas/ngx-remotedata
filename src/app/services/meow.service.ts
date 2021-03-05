@@ -13,6 +13,6 @@ export class MeowService {
   meow() {
     return this.http
       .get<CatImage>('https://aws.random.cat/meow')
-      .pipe(delay(1000 + Math.random() * 4000));
+      .pipe(delay(2000 + Math.random() * 1000));
   }
 }
