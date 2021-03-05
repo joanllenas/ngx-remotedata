@@ -8,7 +8,11 @@ import {
   IsFailurePipe,
   IsInProgressPipe,
   IsNotAskedPipe,
-  IsSuccessPipe
+  IsSuccessPipe,
+  GetSuccessPipe,
+  GetInProgressPipe,
+  GetFailureErrorPipe,
+  GetFailureValuePipe
 } from './pipes';
 import {
   AnyRemoteData,
@@ -22,61 +26,65 @@ describe('Boolean Pipes', () => {
   ([
     {
       PipeClass: IsNotAskedPipe,
-      rd: NotAsked.of(),
-      rdBad: InProgress.of(null)
+      pipeForTrue: NotAsked.of(),
+      pipeForFalse: InProgress.of(null)
     },
     {
       PipeClass: IsInProgressPipe,
-      rd: InProgress.of(null),
-      rdBad: NotAsked.of()
+      pipeForTrue: InProgress.of(null),
+      pipeForFalse: NotAsked.of()
     },
     {
       PipeClass: IsFailurePipe,
-      rd: Failure.of('Ouch', ''),
-      rdBad: InProgress.of(null)
+      pipeForTrue: Failure.of('Ouch', ''),
+      pipeForFalse: InProgress.of(null)
     },
     {
       PipeClass: IsSuccessPipe,
-      rd: Success.of('ok'),
-      rdBad: Failure.of('grrrr', '')
+      pipeForTrue: Success.of('ok'),
+      pipeForFalse: Failure.of('grrrr', '')
     },
     {
       PipeClass: HasValuePipe,
-      rd: Success.of('ok'),
-      rdBad: Failure.of('grrrr')
+      pipeForTrue: Success.of('ok'),
+      pipeForFalse: Failure.of('grrrr')
     },
     {
       PipeClass: HasValuePipe,
-      rd: Failure.of('failed', 'value'),
-      rdBad: Failure.of(false, null)
+      pipeForTrue: Failure.of('failed', 'value'),
+      pipeForFalse: Failure.of(false, null)
     },
     {
       PipeClass: HasValuePipe,
-      rd: InProgress.of('ok'),
-      rdBad: InProgress.of(null)
+      pipeForTrue: InProgress.of('ok'),
+      pipeForFalse: InProgress.of(null)
     },
     {
       PipeClass: HasValuePipe,
-      rd: InProgress.of('ok'),
-      rdBad: InProgress.of(undefined)
+      pipeForTrue: InProgress.of('ok'),
+      pipeForFalse: InProgress.of(undefined)
     },
     {
       PipeClass: HasValuePipe,
-      rd: InProgress.of(false),
-      rdBad: NotAsked.of()
+      pipeForTrue: InProgress.of(false),
+      pipeForFalse: NotAsked.of()
     }
   ] as {
     PipeClass: new () => PipeTransform;
-    rd: AnyRemoteData;
-    rdBad: AnyRemoteData;
-  }[]).forEach(({ PipeClass, rd, rdBad }) => {
+    pipeForTrue: AnyRemoteData;
+    pipeForFalse: AnyRemoteData;
+  }[]).forEach(({ PipeClass, pipeForTrue, pipeForFalse }) => {
     const pipeInstance = new PipeClass();
     describe(`${pipeInstance.constructor.name}`, () => {
-      it(`should return true when value is ${rd.constructor.name}`, () => {
-        expect(pipeInstance.transform(rd)).toBe(true);
+      it(`should return true when value is ${pipeForTrue.constructor.name}`, () => {
+        expect(pipeInstance.transform(pipeForTrue)).toBe(true);
       });
-      it(`should return false when value is not ${rd.constructor.name}`, () => {
-        expect(pipeInstance.transform(rdBad)).toBe(false);
+      it(`should return false when value is not ${pipeForTrue.constructor.name}`, () => {
+        expect(pipeInstance.transform(pipeForFalse)).toBe(false);
+      });
+      it(`should return false when value is null or undefined`, () => {
+        expect(pipeInstance.transform(undefined)).toBe(false);
+        expect(pipeInstance.transform(null)).toBe(false);
       });
       it(`should throw when value is not a RemoteData`, () => {
         expect(() => pipeInstance.transform(new Error('Ouch!'))).toThrow();
@@ -86,6 +94,17 @@ describe('Boolean Pipes', () => {
 });
 
 describe('Value Pipes', () => {
+  it(`should return undefined when value is null or undefined`, () => {
+    expect(new GetRemoteDataValuePipe().transform(null)).toBe(undefined);
+    expect(new GetRemoteDataValuePipe().transform(undefined)).toBe(undefined);
+  });
+
+  it(`should throw when value is not a RemoteData`, () => {
+    expect(() =>
+      new GetRemoteDataValuePipe().transform(new Error('ouch!') as any)
+    ).toThrow();
+  });
+
   ([
     {
       PipeClass: GetRemoteDataValuePipe,
@@ -172,6 +191,10 @@ describe('AnyIsInProgressPipe', () => {
       ])
     ).toBe(false);
   });
+  it('should return false value is undefined or null', () => {
+    expect(new AnyIsInProgressPipe(cd).transform(undefined)).toBe(false);
+    expect(new AnyIsInProgressPipe(cd).transform(null)).toBe(false);
+  });
 });
 
 describe('AnyIsNotAskedPipe', () => {
@@ -194,5 +217,80 @@ describe('AnyIsNotAskedPipe', () => {
         of(Failure.of('grr'))
       ])
     ).toBe(false);
+  });
+  it('should return false value is undefined or null', () => {
+    expect(new AnyIsNotAskedPipe(cd).transform(undefined)).toBe(false);
+    expect(new AnyIsNotAskedPipe(cd).transform(null)).toBe(false);
+  });
+});
+
+describe('GetSuccessPipe', () => {
+  it(`should return the value when it's a Success`, () => {
+    expect(new GetSuccessPipe().transform(Success.of('hola'))).toBe('hola');
+  });
+  it(`should throw when it's not a Remotedata`, () => {
+    expect(() => new GetSuccessPipe().transform(true as any)).toThrow();
+  });
+  it(`should return the default value when it's not a Success`, () => {
+    const failure = Failure.of<string>('ouch!');
+    expect(new GetSuccessPipe().transform(failure, 'adios')).toBe('adios');
+  });
+  it(`should return the default value when it's a null or undefined`, () => {
+    expect(new GetSuccessPipe().transform(undefined, 'adios')).toBe('adios');
+    expect(new GetSuccessPipe().transform(null, 'adios')).toBe('adios');
+  });
+});
+
+describe('GetInProgressPipe', () => {
+  it(`should return the value when it's an InProgress`, () => {
+    expect(new GetInProgressPipe().transform(InProgress.of('hola'))).toBe(
+      'hola'
+    );
+  });
+  it(`should throw when it's not a Remotedata`, () => {
+    expect(() => new GetInProgressPipe().transform(true as any)).toThrow();
+  });
+  it(`should return the default value when it's not an InProgress`, () => {
+    const failure = Failure.of<string>('ouch!');
+    expect(new GetInProgressPipe().transform(failure, 'adios')).toBe('adios');
+  });
+  it(`should return the default value when it's a null or undefined`, () => {
+    expect(new GetInProgressPipe().transform(undefined, 'adios')).toBe('adios');
+    expect(new GetInProgressPipe().transform(null, 'adios')).toBe('adios');
+  });
+});
+
+describe('GetFailureErrorPipe', () => {
+  it(`should return the error when it's a Failure`, () => {
+    expect(new GetFailureErrorPipe().transform(Failure.of('hola'))).toBe(
+      'hola'
+    );
+  });
+  it(`should throw when it's not a Remotedata`, () => {
+    expect(() => new GetFailureErrorPipe().transform(true as any)).toThrow();
+  });
+  it(`should return undefined when it's not a Failure`, () => {
+    expect(new GetFailureErrorPipe().transform(NotAsked.of())).toBe(undefined);
+  });
+  it(`should return undefined when it's a null or undefined`, () => {
+    expect(new GetFailureErrorPipe().transform(undefined)).toBe(undefined);
+    expect(new GetFailureErrorPipe().transform(null)).toBe(undefined);
+  });
+});
+
+describe('GetFailureValuePipe', () => {
+  it(`should return the error when it's a Failure`, () => {
+    const failure = Failure.of('err', 'hola');
+    expect(new GetFailureValuePipe().transform(failure)).toBe('hola');
+  });
+  it(`should throw when it's not a Remotedata`, () => {
+    expect(() => new GetFailureValuePipe().transform(true as any)).toThrow();
+  });
+  it(`should return undefined when it's not a Failure`, () => {
+    expect(new GetFailureValuePipe().transform(NotAsked.of())).toBe(undefined);
+  });
+  it(`should return undefined when it's a null or undefined`, () => {
+    expect(new GetFailureValuePipe().transform(undefined)).toBe(undefined);
+    expect(new GetFailureValuePipe().transform(null)).toBe(undefined);
   });
 });

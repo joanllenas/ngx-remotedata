@@ -8,7 +8,7 @@ export const RemoteDataTags = {
 } as const;
 
 export class NotAsked {
-  private tag = RemoteDataTags.NotAsked;
+  readonly tag = RemoteDataTags.NotAsked;
   private constructor() {}
   static of<T, E = DefaultError>(): RemoteData<T, E> {
     return new NotAsked();
@@ -16,7 +16,7 @@ export class NotAsked {
 }
 
 export class InProgress<T> {
-  private tag = RemoteDataTags.InProgress;
+  readonly tag = RemoteDataTags.InProgress;
   private constructor(private val?: T) {}
   static of<T, E = DefaultError>(value?: T): RemoteData<T, E> {
     return new InProgress(value);
@@ -27,7 +27,7 @@ export class InProgress<T> {
 }
 
 export class Failure<E, T> {
-  private tag = RemoteDataTags.Failure;
+  readonly tag = RemoteDataTags.Failure;
   private constructor(private err: E, private val?: T) {}
   static of<T, E = DefaultError>(err: E, val?: T): RemoteData<T, E> {
     return new Failure(err, val);
@@ -41,7 +41,7 @@ export class Failure<E, T> {
 }
 
 export class Success<T> {
-  private tag = RemoteDataTags.Success;
+  readonly tag = RemoteDataTags.Success;
   private constructor(private val: T) {}
   static of<T, E = DefaultError>(value: T): RemoteData<T, E> {
     return new Success(value);

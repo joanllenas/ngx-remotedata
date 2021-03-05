@@ -36,7 +36,7 @@
   <img
     style="margin-top: 10px"
     class="responsive-img"
-    [src]="(catImage$ | async | successValue).file"
+    [src]="(catImage$ | async | successValue)?.file"
   />
 </div>
 

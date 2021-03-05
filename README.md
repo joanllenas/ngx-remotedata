@@ -11,9 +11,9 @@ Library inspired by [Kris Jenkins](https://twitter.com/krisajenkins) blog post a
 
 ## What we are trying to solve
 
-You are making an API request, and you want to display different things based on the status of the request.
+We are making an API request and want to display different things based on the request's status.
 
-### The Boolean approach
+### The traditional approach
 
 ```ts
 export interface SunriseSunset {
@@ -26,36 +26,36 @@ export interface SunriseSunset {
 }
 ```
 
-Let’s see what each property means:
+Let us see what each property means:
 
-- `isInProgress`: It‘s true while the remote data is being fetched.
-- `error`: It‘s either null (no errors) or any string (there are errors).
-- `data`: It’s either null (no data) or an object (there is data).
+- `isInProgress`: It is `true` while the data is being fetched.
+- `error`: It is either `null` (no errors) or any `string` (there are errors).
+- `data`: Either `null` (no data) or the result payload (there is data).
 
-**There are a few problems with this approach** but the main one is that it is possible to create invalid states such:
+There are a few problems with this approach, the main one being that it is possible to create **invalid states** such as:
 
-```
+```json
 {
-  isInProgress: true,
-  error: 'Fatal error',
-  data: {
-    sunrise: 'I am good data.',
-    sunset: 'I am good data too!',
+  "isInProgress": true,
+  "error": "Fatal error",
+  "data": {
+    "sunrise": "I am good data.",
+    "sunset": "I am good data too!"
   }
 }
 ```
 
-Our template will have to use complex `*ngIf` statements to make sure that we are displaying precisely what we should.
+Our html template will have to use complex `*ngIf` statements to be sure that we are displaying the correct information.
 
-### The RemoteData approach
+### The `RemoteData` approach ™
 
-Instead of using a complex object we use a single data type to express all possible request states:
+Instead of using a complex data structures we use a single data type to express all possible request states:
 
 ```ts
-type RemoteData<T, E = string> =
-  | NotAsked
-  | InProgress<T>
-  | Failure<E, T>
+type RemoteData<T, E> = 
+  | NotAsked 
+  | InProgress<T> 
+  | Failure<E, T> 
   | Success<T>;
 ```
 

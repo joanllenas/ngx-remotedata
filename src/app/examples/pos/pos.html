@@ -49,7 +49,7 @@
     class="responsive-img"
     [src]="
       (service.meow$ | async | successValue)?.file ||
-      (service.meow$ | async | inProgressValue).file
+      (service.meow$ | async | inProgressValue)?.file
     "
   />
 </div>
