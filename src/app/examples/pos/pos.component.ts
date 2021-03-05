@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { PosService } from './pos.service';
 
 @Component({
-  selector: 'pos',
+  selector: 'app-pos',
   templateUrl: './pos.html'
 })
 export class PosComponent {

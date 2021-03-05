@@ -7,7 +7,7 @@
     "declaration": false,
     "downlevelIteration": true,
     "experimentalDecorators": true,
-    "module": "esnext",
+    "module": "es2020",
     "moduleResolution": "node",
     "importHelpers": true,
     "target": "es2015",
@@ -20,11 +20,8 @@
       "dom"
     ],
     "paths": {
-      "lib": [
-        "dist/lib"
-      ],
-      "lib/*": [
-        "dist/lib/*"
+      "ngx-remotedata": [
+        "projects/lib/src/public_api.ts"
       ]
     }
   },

@@ -2,15 +2,15 @@ import { Component, OnDestroy } from '@angular/core';
 import { BehaviorSubject, Subscription } from 'rxjs';
 import {
   RemoteData,
-  NotAsked,
-  InProgress,
-  Success,
-  Failure
-} from '../../../../projects/lib/src/public_api';
+  notAsked,
+  inProgress,
+  success,
+  failure
+} from 'ngx-remotedata';
 import { FormGroup, FormControl } from '@angular/forms';
 
 @Component({
-  selector: 'basics',
+  selector: 'app-basics',
   templateUrl: './basics.html'
 })
 export class BasicsComponent implements OnDestroy {
@@ -26,27 +26,27 @@ export class BasicsComponent implements OnDestroy {
 
   constructor() {
     // Single observable source example
-    const map: { [key: string]: RemoteData<string> } = {
-      notAsked: NotAsked.of(),
-      inProgress: InProgress.of(''),
-      success: Success.of('Ok ' + Math.round(1000 * Math.random()).toString()),
-      failure: Failure.of('Ouch!')
+    const map: Record<string, RemoteData<string>> = {
+      notAsked: notAsked(),
+      inProgress: inProgress(),
+      success: success('Ok!'),
+      failure: failure('Ouch!')
     };
-    this.testData$ = new BehaviorSubject(NotAsked.of());
+    this.testData$ = new BehaviorSubject(notAsked());
     const testDataRadioGroup = new FormControl();
     this.radiogroupForm = new FormGroup({
       testDataRadioGroup
     });
     this.subscriptions.push(
-      testDataRadioGroup.valueChanges.subscribe((data: string) => {
+      testDataRadioGroup.valueChanges.subscribe(data => {
         this.testData$.next(map[data]);
       })
     );
 
     // Multiple observable sources example
-    this.inProgress1$ = new BehaviorSubject(NotAsked.of());
-    this.inProgress2$ = new BehaviorSubject(NotAsked.of());
-    this.inProgress3$ = new BehaviorSubject(NotAsked.of());
+    this.inProgress1$ = new BehaviorSubject(notAsked());
+    this.inProgress2$ = new BehaviorSubject(notAsked());
+    this.inProgress3$ = new BehaviorSubject(notAsked());
     const check1 = new FormControl();
     const check2 = new FormControl();
     const check3 = new FormControl();
@@ -58,18 +58,18 @@ export class BasicsComponent implements OnDestroy {
     this.subscriptions.push(
       check1.valueChanges.subscribe((checked: boolean) => {
         checked
-          ? this.inProgress1$.next(InProgress.of(''))
-          : this.inProgress1$.next(NotAsked.of());
+          ? this.inProgress1$.next(inProgress())
+          : this.inProgress1$.next(notAsked());
       }),
       check2.valueChanges.subscribe((checked: boolean) => {
         checked
-          ? this.inProgress2$.next(InProgress.of(''))
-          : this.inProgress2$.next(NotAsked.of());
+          ? this.inProgress2$.next(inProgress())
+          : this.inProgress2$.next(notAsked());
       }),
       check3.valueChanges.subscribe((checked: boolean) => {
         checked
-          ? this.inProgress3$.next(InProgress.of(''))
-          : this.inProgress3$.next(NotAsked.of());
+          ? this.inProgress3$.next(inProgress())
+          : this.inProgress3$.next(notAsked());
       })
     );
   }

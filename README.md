@@ -11,9 +11,9 @@ Library inspired by [Kris Jenkins](https://twitter.com/krisajenkins) blog post a
 
 ## What we are trying to solve
 
-You are making an API request, and you want to display different things based on the status of the request.
+We are making an API request and want to display different things based on the request's status.
 
-### The Boolean approach
+### The traditional approach
 
 ```ts
 export interface SunriseSunset {
@@ -26,36 +26,36 @@ export interface SunriseSunset {
 }
 ```
 
-Let’s see what each property means:
+Let us see what each property means:
 
-- `isInProgress`: It‘s true while the remote data is being fetched.
-- `error`: It‘s either null (no errors) or any string (there are errors).
-- `data`: It’s either null (no data) or an object (there is data).
+- `isInProgress`: It is `true` while the data is being fetched.
+- `error`: It is either `null` (no errors) or any `string` (there are errors).
+- `data`: Either `null` (no data) or the result payload (there is data).
 
-**There are a few problems with this approach** but the main one is that it is possible to create invalid states such:
+There are a few problems with this approach, the main one being that it is possible to create **invalid states** such as:
 
-```
+```json
 {
-  isInProgress: true,
-  error: 'Fatal error',
-  data: {
-    sunrise: 'I am good data.',
-    sunset: 'I am good data too!',
+  "isInProgress": true,
+  "error": "Fatal error",
+  "data": {
+    "sunrise": "I am good data.",
+    "sunset": "I am good data too!"
   }
 }
 ```
 
-Our template will have to use complex `*ngIf` statements to make sure that we are displaying precisely what we should.
+Our html template will have to use complex `*ngIf` statements to make sure we are displaying the correct information.
 
-### The RemoteData approach
+### The `RemoteData` approach ™
 
-Instead of using a complex object we use a single data type to express all possible request states:
+Instead of using a complex data structures we use a single data type to express all possible request states:
 
 ```ts
-type RemoteData<T, E = string> =
-  | NotAsked
-  | InProgress<T>
-  | Failure<E, T>
+type RemoteData<T, E> = 
+  | NotAsked 
+  | InProgress<T> 
+  | Failure<E, T> 
   | Success<T>;
 ```
 
@@ -83,29 +83,35 @@ import { RemoteDataModule } from 'ngx-remotedata';
 ```ts
 // app.component.ts
 
-import { InProgress, NotAsked, Success, Failure } from 'ngx-remotedata';
+import {
+  RemoteData,
+  inProgress,
+  notAsked,
+  success,
+  failure
+} from 'ngx-remotedata';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html'
 })
 export class AppComponent {
-  remoteData: RemoteData<string> = NotAsked.of();
+  remoteData: RemoteData<string> = notAsked();
 
   setNotAsked() {
-    this.remoteData = NotAsked.of();
+    this.remoteData = notAsked();
   }
 
   setInProgress() {
-    this.remoteData = InProgress.of('In progress...');
+    this.remoteData = inProgress('In progress...');
   }
 
   setSuccess() {
-    this.remoteData = Success.of('Success!');
+    this.remoteData = success('Success!');
   }
 
   setFailure() {
-    this.remoteData = Failure.of('Wrong!');
+    this.remoteData = failure('Wrong!');
   }
 }
 ```
@@ -142,137 +148,237 @@ export class AppComponent {
 
 ### RemoteData
 
-`RemoteData<T, E = string>`
+`RemoteData<T, E>`
 
 `RemoteData` is used to annotate your request variables. It wraps all possible request states into one single union type. Use the parameters to specify:
 
 - `T`: The success value type.
 - `E`: The error value type (`string` by default).
 
+- Type guard function: `isRemoteData = <T, E>(value: unknown): value is RemoteData<T, E>`.
+
 ### NotAsked
 
-`NotAsked`
+- Constructor function: `notAsked<T, E>(): RemoteData<T, E>`.
+- Type guard function: `isNotAsked<T, E>(value: unknown): value is NotAsked`.
 
-When a `RemoteData` is an instance of the `NotAsked` class, it means that the request hasn't been made yet.
+When a `RemoteData` is a `NotAsked` instance, it means that the request hasn't been made yet.
 
 ```ts
 type User = { email: string };
-const remoteData: RemoteData<User> = NotAsked.of();
+const myRemoteData: RemoteData<User> = notAsked();
+
+// (...)
+
+if (isNotAsked(myRemoteData)) {
+  // Here myRemoteData is narrowed to NotAsked
+}
 ```
 
 ### InProgress
 
-`InProgress<T>`
+- Constructor function: `inProgress<T, E>(value?: T): RemoteData<T, E>`.
+- Type guard function: `isInProgress<T, E>(value: unknown): value is InProgress<T>`.
 
-When a `RemoteData` is an instance of the `InProgress` class, it means that the request has been made, but it hasn't returned any data yet. The `InProgress` class can contain a value of the same `T` type as the `Success` class. Useful when you want to use the last `Success` value while the new data is being fetched.
+When a `RemoteData` is an `InProgress` instance, it means that the request has been made, but it hasn't returned any data yet.
+
+The `InProgress` instance can contain a value of the same `T` type as `Success`. Useful when you want to use the last `Success` value while the new data is being fetched.
 
 ```ts
 type User = { email: string };
-const remoteData: RemoteData<User> = InProgress.of({ email: 'john@doe.com' });
+const myRemoteData: RemoteData<User> = inProgress({ email: 'john@doe.com' });
+
+// (...)
+
+if (isInProgress(myRemoteData)) {
+  // Here myRemoteData is narrowed to InProgress
+  console.log(`I have some data: ${myRemoteData.value().email}`);
+}
 ```
 
 ### Success
 
-`Success<T>`
+- Constructor function: `success<T, E>(value: T): RemoteData<T, E>`.
+- Type guard function: `isSuccess<T, E>(value: unknown): value is Success<T>`.
 
-When a `RemoteData` is an instance of the `Success` class, it means that the request has completed successfully and the new data (of type `T`) is available.
+When a `RemoteData` is a `Success` instance, it means that the request has completed successfully and the new data (of type `T`) is available.
 
 ```ts
 type User = { email: string };
-const remoteData: RemoteData<User> = Success.of({ email: 'john@doe.com' });
+const myRemoteData: RemoteData<User> = success({ email: 'john@doe.com' });
+
+// (...)
+
+if (isSuccess(myRemoteData)) {
+  // Here myRemoteData is narrowed to Success
+  console.log(`I have some data: ${myRemoteData.value().email}`);
+}
 ```
 
 ### Failure
 
-`Failure<E, T>`
+- Constructor function: `failure<T, E>(err: E, val?: T): RemoteData<T, E>`.
+- Type guard function: `isFailure<T, E>(value: unknown): value is Failure<E, T>`.
 
-When a `RemoteData` is an instance of the `Failure` class, it means that the request has failed. You can get the error information (of type `E`) from the payload and.
-As with the `InProgress` class, `Failure` can optionally contain a value of the same `T` type as the `Success` class. Useful when you want to use the last `Success` value while displaying the failure message.
+When a `RemoteData` is a `Failure` instance, it means that the request has failed. You can get the error information (of type `E`) from the payload.
+
+The `Failure` instance can contain a value of the same `T` type as `Success`. Useful when you want to use the last `Success` value while displaying the failure message.
 
 ```ts
 type User = { email: string };
-const remoteData: RemoteData<User> = Failure.of('Something went wrong.');
+const myRemoteData: RemoteData<User> = failure('Something went wrong.', {
+  email: 'john@doe.com'
+});
+
+// (...)
+
+if (isFailure(myRemoteData)) {
+  // Here myRemoteData is narrowed to Failure
+  console.log(`This is the failure: ${myRemoteData.error()}`);
+  console.log(`I have some data: ${myRemoteData.value().email}`);
+}
 ```
 
 The default type for errors is `string`, but you can also provide other types like `Error`:
 
 ```ts
 type User = { email: string };
-const remoteData: RemoteData<User, Error> = Failure.of(
+const myRemoteData: RemoteData<User, Error> = failure(
   new Error('Something went wrong.')
 );
+```
+
+## Unwrapping RemoteData values
+
+### getOrElse
+
+```ts
+getOrElse<T, E>(rd: RemoteData<T, E>, defaultValue: T): T;
+```
+
+`getOrElse` _unwraps_ and returns the value of `Success` instances or the `defaultValue` when it's any other `RemoteData` variant.
+
+```ts
+let myRemoteData = success('ok!');
+console.log(getOrElse(myRemoteData, 'The default value')); // ok!
+
+myRemoteData = failure('There has been an error');
+console.log(getOrElse(myRemoteData, 'The default value')); // The default value
+```
+
+### fold
+
+```ts
+fold<T, E>(
+  onNotAsked: () => T,
+  onInProgress: (value: T | undefined) => T,
+  onFailure: (error: E, value: T | undefined) => T,
+  onSuccess: (value: T) => T,
+  rd: RemoteData<T, E>
+): T;
+```
+
+With `fold` you _unwrap_ the `RemoteData` value by providing a function for each of the type variants.
+
+```ts
+const value = fold(
+  () => 'not asked',
+  val => 'in progress ' + val,
+  (error, value) => `failure ${error} ${value}`,
+  value => 'success ' + value,
+  success('is nice!')
+);
+console.log(value); // success is nice!
 ```
 
 ## Pipes
 
 ### isNotAsked
 
-`isNotAsked | RemoteData<any> : boolean`
+`transform<T, E>(rd: RemoteData<T, E>): boolean;`
 
 Returns `true` when `RemoteData` is a `NotAsked` instance.
 
 ### anyIsNotAsked
 
-`anyIsNotAsked | Observable<RemoteData<any>>[] : boolean`
+```ts
+transform<T, E>(
+  rds$: Observable<RemoteData<T, E>>[]
+): boolean;
+```
 
-Returns `true` when any `RemoteData<any>[]` item is a `NotAsked` instance.
+Returns `true` when any `RemoteData<T, E>[]` items is a `NotAsked` instance.
 
 ### isInProgress
 
-`isInProgress | RemoteData<any> : boolean`
+`transform<T, E>(rd: RemoteData<T, E>): boolean;`
 
 Returns `true` when `RemoteData` is an `InProgress` instance.
 
 ### anyIsInProgress
 
-`anyIsInProgress | Observable<RemoteData<any>>[] : boolean`
+```ts
+transform<T, E>(
+  rds$: Observable<RemoteData<T, E>>[]
+): boolean;
+```
 
-Returns `true` when any `RemoteData<any>[]` item is an `InProgress` instance.
+Returns `true` when any `RemoteData<T, E>[]` item is an `InProgress` instance.
 
 ### isFailure
 
-`isFailure | RemoteData<any> : boolean`
+`transform<T, E>(rd: RemoteData<T, E>): boolean;`
 
 Returns `true` when `RemoteData` is a `Failure` instance.
 
 ### isSuccess
 
-`isSuccess | RemoteData<any> : boolean`
+`transform<T, E>(rd: RemoteData<T, E>): boolean;`
 
 Returns `true` when `RemoteData` is a `Success` instance.
 
 ### hasValue
 
-`hasValue | RemoteData<any> : boolean`
+`transform<T, E>(rd: RemoteData<T, E>): boolean;`
 
 Returns `true` when `RemoteData` is a `Success` instance or is an `InProgress` or `Failure` instance with a value that is not `null` or `undefined`.
 
 ### successValue
 
-`successValue | RemoteData<T> : (T | undefined)`
+```ts
+transform<T, E>(
+  rd: RemoteData<T, E>,
+  defaultValue?: T
+): T | undefined;
+```
 
-Returns the `Success` payload (of type `T`) when `RemoteData` is a `Success` instance or `undefined` otherwise.
+Returns the `Success` payload (of type `T`) when the `RemoteData` is a `Success` instance, otherwise it returns the `defaultValue` when provided or `undefined` when not.
 
 ### inProgressValue
 
-`inProgressValue | RemoteData<T> : (T | undefined)`
+```ts
+transform<T, E>(
+  rd: RemoteData<T, E>,
+  defaultValue?: T | undefined
+): T | undefined;
+```
 
-Returns the `InProgress` payload (of type `T`) when `RemoteData` is an `InProgress` instance or `undefined` otherwise.
+Returns the `InProgress` payload (of type `T`) when `RemoteData` is an `InProgress` instance, otherwise it returns the provided `defaultValue` or `undefined` when not.
 
 ### remoteDataValue
 
-`remoteDataValue | RemoteData<T> : (T | undefined)`
+`transform<T, E>(rd: RemoteData<T, E>): T | E | undefined;`
 
-Returns the `InProgress`, `Failure` or `Success` payload (of type `T`) when `RemoteData` is an `InProgress`, `Failure` or `Success` instance, returns `undefined` otherwise.
+Returns the `InProgress`, `Failure` or `Success` payload (of type `T`) when `RemoteData` is an `InProgress`, `Failure` or `Success` instance. Returns `undefined` otherwise.
 
 ### failureError
 
-`failureError | RemoteData<T, E> : (E | undefined)`
+`transform<T, E>(rd: RemoteData<T, E>): E | undefined`
 
 Returns the `Failure` error payload (of type `E`) when `RemoteData` is a `Failure` instance or `undefined` otherwise.
 
 ### failureValue
 
-`failureValue | RemoteData<T, E> : (T | undefined)`
+`transform<T, E>(rd: RemoteData<T, E>): T | undefined`
 
 Returns the `Failure` payload (of type `T`) when `RemoteData` is a `Failure` instance or `undefined` otherwise.

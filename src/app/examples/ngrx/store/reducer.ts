@@ -1,28 +1,29 @@
 import { MeowActionTypes, MeowActions } from './actions';
 import {
-  NotAsked,
-  InProgress,
-  Success,
-  Failure,
-  RemoteData
-} from '../../../../../projects/lib/src/lib/remote-data';
+  notAsked,
+  inProgress,
+  success,
+  failure,
+  RemoteData,
+  isSuccess
+} from 'ngx-remotedata';
 import { CatImage } from '../../../services/meow.service';
 
-export const initialState: RemoteData<CatImage> = NotAsked.of();
+export const initialState: RemoteData<CatImage> = notAsked();
 
 export const oldValue = (state: RemoteData<CatImage>) =>
-  state instanceof Success ? state.value() : undefined;
+  isSuccess(state) ? state.value() : undefined;
 
 export function meowReducer(state = initialState, action: MeowActions) {
   switch (action.type) {
     case MeowActionTypes.MEOW:
-      return InProgress.of(oldValue(state));
+      return inProgress(oldValue(state));
 
     case MeowActionTypes.MEOW_SUCCESS:
-      return Success.of(action.payload.image);
+      return success(action.payload.image);
 
     case MeowActionTypes.MEOW_FAILURE:
-      return Failure.of(action.payload.error);
+      return failure(action.payload.error);
 
     default:
       return state;

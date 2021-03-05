@@ -4,10 +4,10 @@ import { AppState } from './store/reducers';
 import { Observable } from 'rxjs';
 import { CatImage } from '../../services/meow.service';
 import { MeowAction } from './store/actions';
-import { RemoteData } from '../../../../projects/lib/src/lib/remote-data';
+import { RemoteData } from 'ngx-remotedata';
 
 @Component({
-  selector: 'ngrx',
+  selector: 'app-ngrx',
   templateUrl: './ngrx.html'
 })
 export class NgrxComponent {

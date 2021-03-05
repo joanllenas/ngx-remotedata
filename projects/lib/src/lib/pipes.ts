@@ -5,23 +5,17 @@ import {
   ChangeDetectorRef
 } from '@angular/core';
 import {
-  AnyRemoteData,
-  Failure,
-  InProgress,
-  NotAsked,
-  Success
+  RemoteData,
+  isRemoteData,
+  isNotAsked,
+  isInProgress,
+  isFailure,
+  isSuccess
 } from './remote-data';
 import { Observable, combineLatest, Subscription } from 'rxjs';
 
 const assertIsRemoteData = (rd: unknown) => {
-  if (
-    !(
-      rd instanceof NotAsked ||
-      rd instanceof InProgress ||
-      rd instanceof Success ||
-      rd instanceof Failure
-    )
-  ) {
+  if (!isRemoteData(rd)) {
     throw new Error(
       `Value "${rd}" is not a RemoteData<T> instance. Did you forget to use the async pipe? i.e: state$ | async | isInProgress`
     );
@@ -30,17 +24,23 @@ const assertIsRemoteData = (rd: unknown) => {
 
 @Pipe({ name: 'isNotAsked' })
 export class IsNotAskedPipe implements PipeTransform {
-  transform(rd: AnyRemoteData): boolean {
+  transform<T, E>(rd: undefined | null | RemoteData<T, E>): boolean {
+    if (rd === null || rd === undefined) {
+      return false;
+    }
     assertIsRemoteData(rd);
-    return rd instanceof NotAsked;
+    return isNotAsked(rd);
   }
 }
 
 @Pipe({ name: 'isInProgress' })
 export class IsInProgressPipe implements PipeTransform {
-  transform(rd: AnyRemoteData): boolean {
+  transform<T, E>(rd: undefined | null | RemoteData<T, E>): boolean {
+    if (rd === null || rd === undefined) {
+      return false;
+    }
     assertIsRemoteData(rd);
-    return rd instanceof InProgress;
+    return isInProgress(rd);
   }
 }
 
@@ -48,11 +48,16 @@ export class IsInProgressPipe implements PipeTransform {
 export class AnyIsInProgressPipe implements PipeTransform, OnDestroy {
   private _latestValue = false;
   private _subscription: Subscription | null = null;
-  private _rds$: Observable<AnyRemoteData>[] = [];
+  private _rds$: Observable<RemoteData<any, any>>[] = [];
 
   constructor(private cd: ChangeDetectorRef) {}
 
-  transform(rds$: Observable<AnyRemoteData>[]): boolean {
+  transform<T, E>(
+    rds$: undefined | null | Observable<RemoteData<T, E>>[]
+  ): boolean {
+    if (rds$ === null || rds$ === undefined) {
+      return false;
+    }
     if (this._rds$ === rds$) {
       return this._latestValue;
     } else if (this._subscription) {
@@ -60,7 +65,7 @@ export class AnyIsInProgressPipe implements PipeTransform, OnDestroy {
     }
     this._rds$ = rds$;
     this._subscription = combineLatest(rds$).subscribe(rds => {
-      this._latestValue = rds.some(rd => rd instanceof InProgress);
+      this._latestValue = rds.some(isInProgress);
       this.cd.markForCheck();
     });
     return this._latestValue;
@@ -83,11 +88,16 @@ export class AnyIsInProgressPipe implements PipeTransform, OnDestroy {
 export class AnyIsNotAskedPipe implements PipeTransform, OnDestroy {
   private _latestValue = false;
   private _subscription: Subscription | null = null;
-  private _rds$: Observable<AnyRemoteData>[] = [];
+  private _rds$: Observable<RemoteData<any, any>>[] = [];
 
   constructor(private cd: ChangeDetectorRef) {}
 
-  transform(rds$: Observable<AnyRemoteData>[]): boolean {
+  transform<T, E>(
+    rds$: undefined | null | Observable<RemoteData<T, E>>[]
+  ): boolean {
+    if (rds$ === null || rds$ === undefined) {
+      return false;
+    }
     if (this._rds$ === rds$) {
       return this._latestValue;
     } else if (this._subscription) {
@@ -95,7 +105,7 @@ export class AnyIsNotAskedPipe implements PipeTransform, OnDestroy {
     }
     this._rds$ = rds$;
     this._subscription = combineLatest(rds$).subscribe(rds => {
-      this._latestValue = rds.some(rd => rd instanceof NotAsked);
+      this._latestValue = rds.some(isNotAsked);
       this.cd.markForCheck();
     });
     return this._latestValue;
@@ -116,61 +126,85 @@ export class AnyIsNotAskedPipe implements PipeTransform, OnDestroy {
 
 @Pipe({ name: 'isFailure' })
 export class IsFailurePipe implements PipeTransform {
-  transform(rd: AnyRemoteData): boolean {
+  transform<T, E>(rd: undefined | null | RemoteData<T, E>): boolean {
+    if (rd === null || rd === undefined) {
+      return false;
+    }
     assertIsRemoteData(rd);
-    return rd instanceof Failure;
+    return isFailure(rd);
   }
 }
 
 @Pipe({ name: 'isSuccess' })
 export class IsSuccessPipe implements PipeTransform {
-  transform(rd: AnyRemoteData): boolean {
+  transform<T, E>(rd: undefined | null | RemoteData<T, E>): boolean {
+    if (rd === null || rd === undefined) {
+      return false;
+    }
     assertIsRemoteData(rd);
-    return rd instanceof Success;
+    return isSuccess(rd);
   }
 }
 
 @Pipe({ name: 'hasValue' })
 export class HasValuePipe implements PipeTransform {
-  transform(rd: AnyRemoteData): boolean {
-    assertIsRemoteData(rd);
-    if (rd instanceof Success) {
+  transform<T, E>(rd: undefined | null | RemoteData<T, E>): boolean {
+    if (isSuccess(rd)) {
       return true;
     } else if (
-      (rd instanceof InProgress || rd instanceof Failure) &&
+      (isInProgress(rd) || isFailure(rd)) &&
       rd.value() !== null &&
       rd.value() !== undefined
     ) {
       return true;
-    } else {
+    } else if (rd === undefined || rd === null) {
       return false;
     }
+    assertIsRemoteData(rd);
+    return false;
   }
 }
 
 @Pipe({ name: 'successValue' })
 export class GetSuccessPipe implements PipeTransform {
-  transform(rd: AnyRemoteData): any {
+  transform<T, E>(
+    rd: undefined | null | RemoteData<T, E>,
+    defaultValue?: T | undefined
+  ): T | undefined {
+    if (isSuccess(rd)) {
+      return rd.value();
+    } else if (rd === undefined || rd === null) {
+      return defaultValue;
+    }
     assertIsRemoteData(rd);
-    return rd instanceof Success ? rd.value() : undefined;
+    return defaultValue;
   }
 }
 
 @Pipe({ name: 'inProgressValue' })
 export class GetInProgressPipe implements PipeTransform {
-  transform(rd: AnyRemoteData): any {
+  transform<T, E>(
+    rd: undefined | null | RemoteData<T, E>,
+    defaultValue?: T | undefined
+  ): T | undefined {
+    if (isInProgress(rd)) {
+      return rd.value();
+    } else if (rd === undefined || rd === null) {
+      return defaultValue;
+    }
     assertIsRemoteData(rd);
-    return rd instanceof InProgress ? rd.value() : undefined;
+    return defaultValue;
   }
 }
 
 @Pipe({ name: 'remoteDataValue' })
 export class GetRemoteDataValuePipe implements PipeTransform {
-  transform(rd: AnyRemoteData): any {
+  transform<T, E>(rd: undefined | null | RemoteData<T, E>): T | E | undefined {
+    if (rd === undefined || rd === null) {
+      return undefined;
+    }
     assertIsRemoteData(rd);
-    return rd instanceof InProgress ||
-      rd instanceof Success ||
-      rd instanceof Failure
+    return isInProgress(rd) || isSuccess(rd) || isFailure(rd)
       ? rd.value()
       : undefined;
   }
@@ -178,16 +212,22 @@ export class GetRemoteDataValuePipe implements PipeTransform {
 
 @Pipe({ name: 'failureError' })
 export class GetFailureErrorPipe implements PipeTransform {
-  transform(rd: AnyRemoteData): any {
+  transform<T, E>(rd: undefined | null | RemoteData<T, E>): E | undefined {
+    if (rd === undefined || rd === null) {
+      return undefined;
+    }
     assertIsRemoteData(rd);
-    return rd instanceof Failure ? rd.error() : undefined;
+    return isFailure(rd) ? rd.error() : undefined;
   }
 }
 
 @Pipe({ name: 'failureValue' })
 export class GetFailureValuePipe implements PipeTransform {
-  transform(rd: AnyRemoteData): any {
+  transform<T, E>(rd: undefined | null | RemoteData<T, E>): T | undefined {
+    if (rd === undefined || rd === null) {
+      return undefined;
+    }
     assertIsRemoteData(rd);
-    return rd instanceof Failure ? rd.value() : undefined;
+    return isFailure(rd) ? rd.value() : undefined;
   }
 }
