@@ -7,7 +7,7 @@
 
 Library inspired by [Kris Jenkins](https://twitter.com/krisajenkins) blog post about [How Elm slays a UI antipattern](http://blog.jenkster.com/2016/06/how-elm-slays-a-ui-antipattern.html), which mixes pretty well with [another article](http://scotthurff.com/posts/why-your-user-interface-is-awkward-youre-ignoring-the-ui-stack) written by [Scott Hurff](https://twitter.com/scotthurff) about what he calls the _UI Stack_.
 
-![](./.github/ui-stack.jpg)
+![](./.github/ui-stack-framed.jpg)
 
 ## What we are trying to solve
 
