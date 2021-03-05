@@ -197,4 +197,4 @@ export type RemoteData<T, E = string> =
 /**
  * @deprecated This type will be removed in the next major version
  */
-type AnyRemoteData = RemoteData<any, any>;
+export type AnyRemoteData = RemoteData<any, any>;
