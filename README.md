@@ -9,9 +9,24 @@ Library inspired by [Kris Jenkins](https://twitter.com/krisajenkins) blog post a
 
 ![](./.github/ui-stack-framed.jpg)
 
+## Table Of Contents
+
+- [What we are trying to solve](#trying-to-solving)
+  - [The traditional approach](#traditional-approach)
+  - [The RemoteData approach](#remotedata-approach)
+- [Installation](#installation)
+- [Basic Usage](#basic-usage)
+- [Examples](#examples)
+- [Api](#api)
+- [Pipes](#pipes)
+
+<a name="trying-to-solving"/>
+
 ## What we are trying to solve
 
 We are making an API request and want to display different things based on the request's status.
+
+<a name="traditional-approach"/>
 
 ### The traditional approach
 
@@ -47,23 +62,25 @@ There are a few problems with this approach, the main one being that it is possi
 
 Our html template will have to use complex `*ngIf` statements to make sure we are displaying the correct information.
 
-### The `RemoteData` approach ™
+<a name="remotedata-approach" />
+
+### The RemoteData approach ™
 
 Instead of using a complex data structures we use a single data type to express all possible request states:
 
 ```ts
-type RemoteData<T, E> = 
-  | NotAsked 
-  | InProgress<T> 
-  | Failure<E, T> 
-  | Success<T>;
+type RemoteData<T, E> = NotAsked | InProgress<T> | Failure<E, T> | Success<T>;
 ```
 
 This approach **makes it impossible to create invalid states**.
 
+<a name="installation" />
+
 ## Installation
 
 `npm install --save ngx-remotedata`
+
+<a name="basic-usage" />
 
 ## Basic Usage
 
@@ -138,11 +155,15 @@ export class AppComponent {
 </h4>
 ```
 
-## Some examples
+<a name="examples" />
+
+## Examples
 
 - [The basics](src/app/examples/basics)
 - [Plain old services](src/app/examples/pos)
 - [Ngrx (includes store rehydration with de/serialization)](src/app/examples/ngrx)
+
+<a name="api" />
 
 ## Api
 
@@ -290,6 +311,8 @@ const value = fold(
 );
 console.log(value); // success is nice!
 ```
+
+<a name="pipes" />
 
 ## Pipes
 
