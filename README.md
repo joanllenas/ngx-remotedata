@@ -17,8 +17,11 @@ Library inspired by [Kris Jenkins](https://twitter.com/krisajenkins) blog post a
 - [Installation](#installation)
 - [Basic Usage](#basic-usage)
 - [Examples](#examples)
-- [Api](#api)
-- [Pipes](#pipes)
+  - [Basic](#examples-basic)
+  - [Services](#examples-services)
+  - [Ngrx](#examples-ngrx)
+- [Api 📚](#api)
+- [Pipes 📚](#pipes)
 
 <a name="trying-to-solving"/>
 
@@ -159,8 +162,16 @@ export class AppComponent {
 
 ## Examples
 
+<a name="examples-basic" />
+
 - [The basics](src/app/examples/basics)
+
+<a name="examples-services" />
+
 - [Plain old services](src/app/examples/pos)
+
+<a name="examples-ngrx" />
+
 - [Ngrx (includes store rehydration with de/serialization)](src/app/examples/ngrx)
 
 <a name="api" />
