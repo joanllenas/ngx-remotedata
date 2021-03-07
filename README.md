@@ -163,9 +163,9 @@ export class AppComponent {
 
 ## Examples
 
-#### Demo
-
 <a name="examples-demo" />
+
+#### Demo
 
 - [Stackblitz Ngrx demo](https://stackblitz.com/edit/ngx-remotedata-demo?file=src%2Fapp%2Fmeow%2Freducer.ts)
 
