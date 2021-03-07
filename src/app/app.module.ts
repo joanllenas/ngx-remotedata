@@ -21,7 +21,6 @@ import {
   inProgress,
   failure,
   success,
-  RemoteDataTags,
   RemoteData
 } from 'ngx-remotedata';
 import { localStorageSync } from './examples/ngrx/store/local-store-sync';

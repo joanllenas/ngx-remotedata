@@ -17,6 +17,7 @@ Library inspired by [Kris Jenkins](https://twitter.com/krisajenkins) blog post a
 - [Installation](#installation)
 - [Basic Usage](#basic-usage)
 - [Examples](#examples)
+  - [Demo 👀](#examples-demo)
   - [Basic](#examples-basic)
   - [Services](#examples-services)
   - [Ngrx](#examples-ngrx)
@@ -161,6 +162,14 @@ export class AppComponent {
 <a name="examples" />
 
 ## Examples
+
+#### Demo
+
+<a name="examples-demo" />
+
+- [Stackblitz Ngrx demo](https://stackblitz.com/edit/ngx-remotedata-demo?file=src%2Fapp%2Fmeow%2Freducer.ts)
+
+#### Source code
 
 <a name="examples-basic" />
 
