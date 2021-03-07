@@ -312,15 +312,42 @@ fold<T, E>(
 
 With `fold` you _unwrap_ the `RemoteData` value by providing a function for each of the type variants.
 
+## Transforming RemoteData values
+
+### map
+
 ```ts
-const value = fold(
-  () => 'not asked',
-  val => 'in progress ' + val,
-  (error, value) => `failure ${error} ${value}`,
-  value => 'success ' + value,
-  success('is nice!')
-);
-console.log(value); // success is nice!
+map<A, B, E>(
+  fn: (a: A) => B,
+  rd: RemoteData<A, E>
+): RemoteData<B, E>;
+```
+
+With `map` you provide a transformation function that is applied to a `RemoteData` only when it's a `Success` instance.
+
+```ts
+const scream = (s: string) => s.toUpperCase();
+const hello = success('hello!');
+const helloScreaming = map(scream, hello);
+console.log(helloScreaming); // success('HELLO!')
+```
+
+### mapFailure
+
+```ts
+mapFailure<A, E, F>(
+  fn: (e: E) => F,
+  rd: RemoteData<A, E>
+): RemoteData<A, F>;
+```
+
+With `mapFailure` you provide a transformation function that is applied to a `RemoteData` only when it's a `Failure` instance.
+
+```ts
+const scream = (s: string) => s.toUpperCase();
+const error = failure('wrong!');
+const wrongScreaming = mapFailure(scream, error);
+console.log(wrongScreaming); // failure('WRONG!')
 ```
 
 <a name="pipes" />

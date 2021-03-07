@@ -184,6 +184,24 @@ export const getOrElse = <T, E>(rd: RemoteData<T, E>, defaultValue: T): T => {
 
 // ----------------------------
 //
+//  Transformations
+//
+// ----------------------------
+
+export const map = <A, B, E>(
+  fn: (a: A) => B,
+  rd: RemoteData<A, E>
+): RemoteData<B, E> =>
+  isSuccess(rd) ? success(fn(rd.value())) : (rd as RemoteData<B, E>);
+
+export const mapFailure = <A, E, F>(
+  fn: (e: E) => F,
+  rd: RemoteData<A, E>
+): RemoteData<A, F> =>
+  isFailure(rd) ? failure(fn(rd.error())) : (rd as RemoteData<A, F>);
+
+// ----------------------------
+//
 //  RemoteData type
 //
 // ----------------------------

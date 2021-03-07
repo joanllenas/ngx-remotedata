@@ -1,11 +1,13 @@
 import {
+  RemoteData,
+  notAsked,
   success,
   failure,
   inProgress,
   getOrElse,
-  notAsked,
   fold,
-  RemoteData
+  map,
+  mapFailure
 } from './remote-data';
 
 describe('RemoteData', () => {
@@ -77,6 +79,32 @@ describe('RemoteData', () => {
     });
     it('it should unwrap the Success variant', () => {
       expect(theFold(success('is nice!'))).toBe('success is nice!');
+    });
+  });
+
+  describe('map', () => () => {
+    it('should transform a succes value', () => {
+      const hello = success('hello!');
+      const scream = (s: string) => s.toUpperCase();
+      expect(map(scream, hello)).toEqual(success('HELLO!'));
+    });
+    it('should not transform a non succes value', () => {
+      const hello = inProgress('hello!');
+      const scream = (s: string) => s.toUpperCase();
+      expect(map(scream, hello)).toEqual(inProgress('hello!'));
+    });
+  });
+
+  describe('mapFailure', () => () => {
+    it('should transform a failure value', () => {
+      const error = failure('wrong!');
+      const scream = (s: string) => s.toUpperCase();
+      expect(mapFailure(scream, error)).toEqual(failure('WRONG!'));
+    });
+    it('should not transform a non failure value', () => {
+      const hello = inProgress('hello!');
+      const scream = (s: string) => s.toUpperCase();
+      expect(mapFailure(scream, hello)).toEqual(inProgress('hello!'));
     });
   });
 });
