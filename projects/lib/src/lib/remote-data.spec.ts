@@ -129,5 +129,13 @@ describe('RemoteData', () => {
       indented = chain(indent, indented);
       expect(indented).toEqual(failure('wrong!'));
     });
+    it('should chain transformations', () => {
+      const checkAge = (n: number) =>
+        n >= 0 ? success(n) : failure(`${n} is an invalid age`);
+      let ageResult = chain(checkAge, success(25));
+      expect(ageResult).toEqual(success(25));
+      ageResult = chain(checkAge, success(-3));
+      expect(ageResult).toEqual(failure('-3  is an invalid age'));
+    });
   });
 });
