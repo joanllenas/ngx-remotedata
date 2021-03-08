@@ -1,73 +1,23 @@
 type DefaultError = string;
 
-/**
- * @deprecated This will be removed in the next major version.
- */
-export const RemoteDataTags = {
-  NotAsked: 'NotAsked',
-  InProgress: 'InProgress',
-  Failure: 'Failure',
-  Success: 'Success'
-} as const;
-
-export class NotAsked {
-  readonly tag = 'NotAsked';
-  private constructor() {}
-  /**
-   * @deprecated This will be removed in the next major version, use the `notAsked()` constructor function instead.
-   * @see notAsked
-   */
-  static of<T, E = DefaultError>(): RemoteData<T, E> {
-    return new NotAsked();
-  }
+interface NotAsked {
+  readonly tag: 'NotAsked';
 }
 
-export class InProgress<T> {
-  readonly tag = 'InProgress';
-  private constructor(private val?: T) {}
-  /**
-   * @deprecated This will be removed in the next major version, use the `inProgress()` constructor function instead.
-   * @see inProgress
-   */
-  static of<T, E = DefaultError>(value?: T): RemoteData<T, E> {
-    return new InProgress(value);
-  }
-  value(): T | undefined {
-    return this.val;
-  }
+interface InProgress<T> {
+  readonly tag: 'InProgress';
+  readonly value: T | undefined;
 }
 
-export class Failure<E, T> {
-  readonly tag = 'Failure';
-  private constructor(private err: E, private val?: T) {}
-  /**
-   * @deprecated This will be removed in the next major version, use the `failure()` constructor function instead.
-   * @see failure
-   */
-  static of<T, E = DefaultError>(err: E, val?: T): RemoteData<T, E> {
-    return new Failure(err, val);
-  }
-  value(): T | undefined {
-    return this.val;
-  }
-  error(): E {
-    return this.err;
-  }
+interface Failure<E, T> {
+  readonly tag: 'Failure';
+  readonly value: T | undefined;
+  error: E;
 }
 
-export class Success<T> {
-  readonly tag = 'Success';
-  private constructor(private val: T) {}
-  /**
-   * @deprecated This will be removed in the next major version, use the `success()` constructor function instead.
-   * @see success
-   */
-  static of<T, E = DefaultError>(value: T): RemoteData<T, E> {
-    return new Success(value);
-  }
-  value(): T {
-    return this.val;
-  }
+interface Success<T> {
+  readonly tag: 'Success';
+  readonly value: T;
 }
 
 // ----------------------------
@@ -77,24 +27,24 @@ export class Success<T> {
 // ----------------------------
 
 export const notAsked = <T, E = DefaultError>(): RemoteData<T, E> => {
-  return NotAsked.of();
+  return { tag: 'NotAsked' };
 };
 
 export const inProgress = <T, E = DefaultError>(
   value?: T
 ): RemoteData<T, E> => {
-  return InProgress.of(value);
+  return { tag: 'InProgress', value };
 };
 
 export const failure = <T, E = DefaultError>(
-  err: E,
-  val?: T
+  error: E,
+  value?: T
 ): RemoteData<T, E> => {
-  return Failure.of(err, val);
+  return { tag: 'Failure', error, value };
 };
 
 export const success = <T, E = DefaultError>(value: T): RemoteData<T, E> => {
-  return Success.of(value);
+  return { tag: 'Success', value };
 };
 
 // ----------------------------
@@ -165,18 +115,18 @@ export const fold = <T, E>(
     case 'NotAsked':
       return onNotAsked();
     case 'InProgress':
-      return onInProgress(rd.value());
+      return onInProgress(rd.value);
     case 'Failure':
-      return onFailure(rd.error(), rd.value());
+      return onFailure(rd.error, rd.value);
     case 'Success':
-      return onSuccess(rd.value());
+      return onSuccess(rd.value);
   }
 };
 
 export const getOrElse = <T, E>(rd: RemoteData<T, E>, defaultValue: T): T => {
   switch (rd.tag) {
     case 'Success':
-      return rd.value();
+      return rd.value;
     default:
       return defaultValue;
   }
@@ -192,13 +142,13 @@ export const map = <A, B, E>(
   fn: (a: A) => B,
   rd: RemoteData<A, E>
 ): RemoteData<B, E> =>
-  isSuccess(rd) ? success(fn(rd.value())) : (rd as RemoteData<B, E>);
+  isSuccess(rd) ? success(fn(rd.value)) : (rd as RemoteData<B, E>);
 
 export const mapFailure = <A, E, F>(
   fn: (e: E) => F,
   rd: RemoteData<A, E>
 ): RemoteData<A, F> =>
-  isFailure(rd) ? failure(fn(rd.error())) : (rd as RemoteData<A, F>);
+  isFailure(rd) ? failure(fn(rd.error)) : (rd as RemoteData<A, F>);
 
 // ----------------------------
 //
@@ -211,8 +161,3 @@ export type RemoteData<T, E = string> =
   | InProgress<T>
   | Failure<E, T>
   | Success<T>;
-
-/**
- * @deprecated This type will be removed in the next major version
- */
-export type AnyRemoteData = RemoteData<any, any>;

@@ -13,7 +13,7 @@ import {
 const oldValue = (obs$: Observable<RemoteData<CatImage>>) => {
   let value: RemoteData<CatImage> | undefined;
   obs$.subscribe(rd => (value = rd));
-  return isSuccess(value) ? value.value() : undefined;
+  return isSuccess(value) ? value.value : undefined;
 };
 
 @Injectable()

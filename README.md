@@ -73,7 +73,11 @@ Our html template will have to use complex `*ngIf` statements to make sure we ar
 Instead of using a complex data structures we use a single data type to express all possible request states:
 
 ```ts
-type RemoteData<T, E> = NotAsked | InProgress<T> | Failure<E, T> | Success<T>;
+type RemoteData<T, E> 
+  = NotAsked 
+  | InProgress<T> 
+  | Failure<E, T> 
+  | Success<T>;
 ```
 
 This approach **makes it impossible to create invalid states**.
@@ -233,7 +237,7 @@ const myRemoteData: RemoteData<User> = inProgress({ email: 'john@doe.com' });
 
 if (isInProgress(myRemoteData)) {
   // Here myRemoteData is narrowed to InProgress
-  console.log(`I have some data: ${myRemoteData.value().email}`);
+  console.log(`I have some data: ${myRemoteData.value.email}`);
 }
 ```
 
@@ -252,7 +256,7 @@ const myRemoteData: RemoteData<User> = success({ email: 'john@doe.com' });
 
 if (isSuccess(myRemoteData)) {
   // Here myRemoteData is narrowed to Success
-  console.log(`I have some data: ${myRemoteData.value().email}`);
+  console.log(`I have some data: ${myRemoteData.value.email}`);
 }
 ```
 
@@ -275,8 +279,8 @@ const myRemoteData: RemoteData<User> = failure('Something went wrong.', {
 
 if (isFailure(myRemoteData)) {
   // Here myRemoteData is narrowed to Failure
-  console.log(`This is the failure: ${myRemoteData.error()}`);
-  console.log(`I have some data: ${myRemoteData.value().email}`);
+  console.log(`This is the failure: ${myRemoteData.error}`);
+  console.log(`I have some data: ${myRemoteData.value.email}`);
 }
 ```
 

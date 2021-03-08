@@ -7,7 +7,9 @@ import {
   getOrElse,
   fold,
   map,
-  mapFailure
+  mapFailure,
+  isFailure,
+  isInProgress
 } from './remote-data';
 
 describe('RemoteData', () => {
@@ -28,7 +30,10 @@ describe('RemoteData', () => {
   describe('inProgress', () => {
     it('should be able to extract the wrapped value', () => {
       const value = { type: 'DoStuff' };
-      expect((inProgress(value) as any).value()).toBe(value);
+      const p = inProgress(value);
+      if (isInProgress(p)) {
+        expect(p.value).toBe(value);
+      }
     });
   });
 
@@ -36,9 +41,11 @@ describe('RemoteData', () => {
     it('should be able to extract the wrapped error and value', () => {
       const err = 'Ouch!';
       const value = { type: 'DoStuff' };
-      const f = failure(err, value) as any;
-      expect(f.error()).toBe(err);
-      expect(f.value()).toBe(value);
+      const f = failure(err, value);
+      if (isFailure(f)) {
+        expect(f.error).toBe(err);
+        expect(f.value).toBe(value);
+      }
     });
   });
 
