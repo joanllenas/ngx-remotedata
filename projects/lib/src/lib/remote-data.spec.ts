@@ -9,7 +9,8 @@ import {
   map,
   mapFailure,
   isFailure,
-  isInProgress
+  isInProgress,
+  chain
 } from './remote-data';
 
 describe('RemoteData', () => {
@@ -112,6 +113,21 @@ describe('RemoteData', () => {
       const hello = inProgress('hello!');
       const scream = (s: string) => s.toUpperCase();
       expect(mapFailure(scream, hello)).toEqual(inProgress('hello!'));
+    });
+  });
+
+  describe('chain', () => () => {
+    it('should chain successes', () => {
+      const indent = (str: string) => success(' ' + str);
+      let indented = chain(indent, success('hello'));
+      indented = chain(indent, indented);
+      expect(indented).toEqual(success('  success'));
+    });
+    it('should not chain on non Success values', () => {
+      const indent = (str: string) => success(' ' + str);
+      let indented = chain(indent, failure('wrong!'));
+      indented = chain(indent, indented);
+      expect(indented).toEqual(failure('wrong!'));
     });
   });
 });

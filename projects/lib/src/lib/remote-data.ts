@@ -150,6 +150,12 @@ export const mapFailure = <A, E, F>(
 ): RemoteData<A, F> =>
   isFailure(rd) ? failure(fn(rd.error)) : (rd as RemoteData<A, F>);
 
+export const chain = <A, B, E>(
+  fn: (a: A) => RemoteData<B, E>,
+  rd: RemoteData<A, E>
+): RemoteData<B, E> =>
+  isSuccess(rd) ? fn(rd.value) : (rd as RemoteData<B, E>);
+
 // ----------------------------
 //
 //  RemoteData type
