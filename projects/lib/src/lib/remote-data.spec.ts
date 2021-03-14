@@ -7,7 +7,10 @@ import {
   getOrElse,
   fold,
   map,
-  mapFailure
+  mapFailure,
+  isFailure,
+  isInProgress,
+  chain
 } from './remote-data';
 
 describe('RemoteData', () => {
@@ -28,7 +31,10 @@ describe('RemoteData', () => {
   describe('inProgress', () => {
     it('should be able to extract the wrapped value', () => {
       const value = { type: 'DoStuff' };
-      expect((inProgress(value) as any).value()).toBe(value);
+      const p = inProgress(value);
+      if (isInProgress(p)) {
+        expect(p.value).toBe(value);
+      }
     });
   });
 
@@ -36,9 +42,11 @@ describe('RemoteData', () => {
     it('should be able to extract the wrapped error and value', () => {
       const err = 'Ouch!';
       const value = { type: 'DoStuff' };
-      const f = failure(err, value) as any;
-      expect(f.error()).toBe(err);
-      expect(f.value()).toBe(value);
+      const f = failure(err, value);
+      if (isFailure(f)) {
+        expect(f.error).toBe(err);
+        expect(f.value).toBe(value);
+      }
     });
   });
 
@@ -105,6 +113,29 @@ describe('RemoteData', () => {
       const hello = inProgress('hello!');
       const scream = (s: string) => s.toUpperCase();
       expect(mapFailure(scream, hello)).toEqual(inProgress('hello!'));
+    });
+  });
+
+  describe('chain', () => () => {
+    it('should chain successes', () => {
+      const indent = (str: string) => success(' ' + str);
+      let indented = chain(indent, success('hello'));
+      indented = chain(indent, indented);
+      expect(indented).toEqual(success('  success'));
+    });
+    it('should not chain on non Success values', () => {
+      const indent = (str: string) => success(' ' + str);
+      let indented = chain(indent, failure('wrong!'));
+      indented = chain(indent, indented);
+      expect(indented).toEqual(failure('wrong!'));
+    });
+    it('should chain transformations', () => {
+      const checkAge = (n: number) =>
+        n >= 0 ? success(n) : failure(`${n} is an invalid age`);
+      let ageResult = chain(checkAge, success(25));
+      expect(ageResult).toEqual(success(25));
+      ageResult = chain(checkAge, success(-3));
+      expect(ageResult).toEqual(failure('-3  is an invalid age'));
     });
   });
 });

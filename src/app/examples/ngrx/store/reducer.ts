@@ -12,7 +12,7 @@ import { CatImage } from '../../../services/meow.service';
 export const initialState: RemoteData<CatImage> = notAsked();
 
 export const oldValue = (state: RemoteData<CatImage>) =>
-  isSuccess(state) ? state.value() : undefined;
+  isSuccess(state) ? state.value : undefined;
 
 export function meowReducer(state = initialState, action: MeowActions) {
   switch (action.type) {

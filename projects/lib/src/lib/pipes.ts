@@ -153,8 +153,8 @@ export class HasValuePipe implements PipeTransform {
       return true;
     } else if (
       (isInProgress(rd) || isFailure(rd)) &&
-      rd.value() !== null &&
-      rd.value() !== undefined
+      rd.value !== null &&
+      rd.value !== undefined
     ) {
       return true;
     } else if (rd === undefined || rd === null) {
@@ -172,7 +172,7 @@ export class GetSuccessPipe implements PipeTransform {
     defaultValue?: T | undefined
   ): T | undefined {
     if (isSuccess(rd)) {
-      return rd.value();
+      return rd.value;
     } else if (rd === undefined || rd === null) {
       return defaultValue;
     }
@@ -188,7 +188,7 @@ export class GetInProgressPipe implements PipeTransform {
     defaultValue?: T | undefined
   ): T | undefined {
     if (isInProgress(rd)) {
-      return rd.value();
+      return rd.value;
     } else if (rd === undefined || rd === null) {
       return defaultValue;
     }
@@ -205,7 +205,7 @@ export class GetRemoteDataValuePipe implements PipeTransform {
     }
     assertIsRemoteData(rd);
     return isInProgress(rd) || isSuccess(rd) || isFailure(rd)
-      ? rd.value()
+      ? rd.value
       : undefined;
   }
 }
@@ -217,7 +217,7 @@ export class GetFailureErrorPipe implements PipeTransform {
       return undefined;
     }
     assertIsRemoteData(rd);
-    return isFailure(rd) ? rd.error() : undefined;
+    return isFailure(rd) ? rd.error : undefined;
   }
 }
 
@@ -228,6 +228,6 @@ export class GetFailureValuePipe implements PipeTransform {
       return undefined;
     }
     assertIsRemoteData(rd);
-    return isFailure(rd) ? rd.value() : undefined;
+    return isFailure(rd) ? rd.value : undefined;
   }
 }

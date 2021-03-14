@@ -73,7 +73,11 @@ Our html template will have to use complex `*ngIf` statements to make sure we ar
 Instead of using a complex data structures we use a single data type to express all possible request states:
 
 ```ts
-type RemoteData<T, E> = NotAsked | InProgress<T> | Failure<E, T> | Success<T>;
+type RemoteData<T, E> 
+  = NotAsked 
+  | InProgress<T> 
+  | Failure<E, T> 
+  | Success<T>;
 ```
 
 This approach **makes it impossible to create invalid states**.
@@ -165,7 +169,7 @@ export class AppComponent {
 
 <a name="examples-demo" />
 
-#### Demo
+#### Demo 👀
 
 - [Stackblitz Ngrx demo](https://stackblitz.com/edit/ngx-remotedata-demo?file=src%2Fapp%2Fmeow%2Freducer.ts)
 
@@ -181,13 +185,13 @@ export class AppComponent {
 
 <a name="examples-ngrx" />
 
-- [Ngrx (includes store rehydration with de/serialization)](src/app/examples/ngrx)
+- [Ngrx](src/app/examples/ngrx) _(includes store rehydration from `localStorage`)_
 
 <a name="api" />
 
 ## Api
 
-### RemoteData
+### RemoteData 📚
 
 `RemoteData<T, E>`
 
@@ -198,7 +202,7 @@ export class AppComponent {
 
 - Type guard function: `isRemoteData = <T, E>(value: unknown): value is RemoteData<T, E>`.
 
-### NotAsked
+### NotAsked 📚
 
 - Constructor function: `notAsked<T, E>(): RemoteData<T, E>`.
 - Type guard function: `isNotAsked<T, E>(value: unknown): value is NotAsked`.
@@ -216,7 +220,7 @@ if (isNotAsked(myRemoteData)) {
 }
 ```
 
-### InProgress
+### InProgress 📚
 
 - Constructor function: `inProgress<T, E>(value?: T): RemoteData<T, E>`.
 - Type guard function: `isInProgress<T, E>(value: unknown): value is InProgress<T>`.
@@ -233,11 +237,11 @@ const myRemoteData: RemoteData<User> = inProgress({ email: 'john@doe.com' });
 
 if (isInProgress(myRemoteData)) {
   // Here myRemoteData is narrowed to InProgress
-  console.log(`I have some data: ${myRemoteData.value().email}`);
+  console.log(`I have some data: ${myRemoteData.value.email}`);
 }
 ```
 
-### Success
+### Success 📚
 
 - Constructor function: `success<T, E>(value: T): RemoteData<T, E>`.
 - Type guard function: `isSuccess<T, E>(value: unknown): value is Success<T>`.
@@ -252,11 +256,11 @@ const myRemoteData: RemoteData<User> = success({ email: 'john@doe.com' });
 
 if (isSuccess(myRemoteData)) {
   // Here myRemoteData is narrowed to Success
-  console.log(`I have some data: ${myRemoteData.value().email}`);
+  console.log(`I have some data: ${myRemoteData.value.email}`);
 }
 ```
 
-### Failure
+### Failure 📚
 
 - Constructor function: `failure<T, E>(err: E, val?: T): RemoteData<T, E>`.
 - Type guard function: `isFailure<T, E>(value: unknown): value is Failure<E, T>`.
@@ -275,8 +279,8 @@ const myRemoteData: RemoteData<User> = failure('Something went wrong.', {
 
 if (isFailure(myRemoteData)) {
   // Here myRemoteData is narrowed to Failure
-  console.log(`This is the failure: ${myRemoteData.error()}`);
-  console.log(`I have some data: ${myRemoteData.value().email}`);
+  console.log(`This is the failure: ${myRemoteData.error}`);
+  console.log(`I have some data: ${myRemoteData.value.email}`);
 }
 ```
 
@@ -291,7 +295,7 @@ const myRemoteData: RemoteData<User, Error> = failure(
 
 ## Unwrapping RemoteData values
 
-### getOrElse
+### getOrElse 📚
 
 ```ts
 getOrElse<T, E>(rd: RemoteData<T, E>, defaultValue: T): T;
@@ -300,6 +304,7 @@ getOrElse<T, E>(rd: RemoteData<T, E>, defaultValue: T): T;
 `getOrElse` _unwraps_ and returns the value of `Success` instances or the `defaultValue` when it's any other `RemoteData` variant.
 
 ```ts
+// Example
 let myRemoteData = success('ok!');
 console.log(getOrElse(myRemoteData, 'The default value')); // ok!
 
@@ -307,7 +312,7 @@ myRemoteData = failure('There has been an error');
 console.log(getOrElse(myRemoteData, 'The default value')); // The default value
 ```
 
-### fold
+### fold 📚
 
 ```ts
 fold<T, E>(
@@ -321,9 +326,22 @@ fold<T, E>(
 
 With `fold` you _unwrap_ the `RemoteData` value by providing a function for each of the type variants.
 
+```ts
+// Example
+const rd = success('this is fine!');
+const result = fold(
+  () => 'not asked',
+  val => 'in progress: ' + val,
+  (error, value) => `failure: ${error} ${value}`,
+  value => 'success: ' + value,
+  rd
+);
+console.log(result); // success: this is fine!
+```
+
 ## Transforming RemoteData values
 
-### map
+### map 📚
 
 ```ts
 map<A, B, E>(
@@ -335,13 +353,14 @@ map<A, B, E>(
 With `map` you provide a transformation function that is applied to a `RemoteData` only when it's a `Success` instance.
 
 ```ts
+// Example
 const scream = (s: string) => s.toUpperCase();
 const hello = success('hello!');
 const helloScreaming = map(scream, hello);
 console.log(helloScreaming); // success('HELLO!')
 ```
 
-### mapFailure
+### mapFailure 📚
 
 ```ts
 mapFailure<A, E, F>(
@@ -353,23 +372,45 @@ mapFailure<A, E, F>(
 With `mapFailure` you provide a transformation function that is applied to a `RemoteData` only when it's a `Failure` instance.
 
 ```ts
+// Example
 const scream = (s: string) => s.toUpperCase();
 const error = failure('wrong!');
 const wrongScreaming = mapFailure(scream, error);
 console.log(wrongScreaming); // failure('WRONG!')
 ```
 
+### chain 📚
+
+```ts
+chain<A, B, E>(
+  fn: (a: A) => RemoteData<B, E>,
+  rd: RemoteData<A, E>
+): RemoteData<B, E>;
+```
+
+With `chain` you can provide a transormation function that can change the returned `RemoteData` variant.
+
+```ts
+// Example
+const checkAge = (n: number) =>
+  n >= 0 ? success(n) : failure(`${n} is an invalid age`);
+let ageResult = chain(checkAge, success(25));
+expect(ageResult).toEqual(success(25));
+ageResult = chain(checkAge, success(-3));
+expect(ageResult).toEqual(failure('-3  is an invalid age'));
+```
+
 <a name="pipes" />
 
 ## Pipes
 
-### isNotAsked
+### isNotAsked 📚
 
 `transform<T, E>(rd: RemoteData<T, E>): boolean;`
 
 Returns `true` when `RemoteData` is a `NotAsked` instance.
 
-### anyIsNotAsked
+### anyIsNotAsked 📚
 
 ```ts
 transform<T, E>(
@@ -379,13 +420,13 @@ transform<T, E>(
 
 Returns `true` when any `RemoteData<T, E>[]` items is a `NotAsked` instance.
 
-### isInProgress
+### isInProgress 📚
 
 `transform<T, E>(rd: RemoteData<T, E>): boolean;`
 
 Returns `true` when `RemoteData` is an `InProgress` instance.
 
-### anyIsInProgress
+### anyIsInProgress 📚
 
 ```ts
 transform<T, E>(
@@ -395,25 +436,25 @@ transform<T, E>(
 
 Returns `true` when any `RemoteData<T, E>[]` item is an `InProgress` instance.
 
-### isFailure
+### isFailure 📚
 
 `transform<T, E>(rd: RemoteData<T, E>): boolean;`
 
 Returns `true` when `RemoteData` is a `Failure` instance.
 
-### isSuccess
+### isSuccess 📚
 
 `transform<T, E>(rd: RemoteData<T, E>): boolean;`
 
 Returns `true` when `RemoteData` is a `Success` instance.
 
-### hasValue
+### hasValue 📚
 
 `transform<T, E>(rd: RemoteData<T, E>): boolean;`
 
 Returns `true` when `RemoteData` is a `Success` instance or is an `InProgress` or `Failure` instance with a value that is not `null` or `undefined`.
 
-### successValue
+### successValue 📚
 
 ```ts
 transform<T, E>(
@@ -424,7 +465,7 @@ transform<T, E>(
 
 Returns the `Success` payload (of type `T`) when the `RemoteData` is a `Success` instance, otherwise it returns the `defaultValue` when provided or `undefined` when not.
 
-### inProgressValue
+### inProgressValue 📚
 
 ```ts
 transform<T, E>(
@@ -435,19 +476,19 @@ transform<T, E>(
 
 Returns the `InProgress` payload (of type `T`) when `RemoteData` is an `InProgress` instance, otherwise it returns the provided `defaultValue` or `undefined` when not.
 
-### remoteDataValue
+### remoteDataValue 📚
 
 `transform<T, E>(rd: RemoteData<T, E>): T | E | undefined;`
 
 Returns the `InProgress`, `Failure` or `Success` payload (of type `T`) when `RemoteData` is an `InProgress`, `Failure` or `Success` instance. Returns `undefined` otherwise.
 
-### failureError
+### failureError 📚
 
 `transform<T, E>(rd: RemoteData<T, E>): E | undefined`
 
 Returns the `Failure` error payload (of type `E`) when `RemoteData` is a `Failure` instance or `undefined` otherwise.
 
-### failureValue
+### failureValue 📚
 
 `transform<T, E>(rd: RemoteData<T, E>): T | undefined`
 
