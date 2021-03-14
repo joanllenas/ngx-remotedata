@@ -2,7 +2,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
-import { StoreModule, ActionReducer, MetaReducer } from '@ngrx/store';
+import { StoreModule, MetaReducer } from '@ngrx/store';
 import { EffectsModule } from '@ngrx/effects';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 
@@ -16,56 +16,8 @@ import { PosComponent } from './examples/pos/pos.component';
 import { PosService } from './examples/pos/pos.service';
 import { MeowEffects } from './examples/ngrx/store/effects';
 import { BasicsComponent } from './examples/basics/basics.component';
-import {
-  notAsked,
-  inProgress,
-  failure,
-  success,
-  RemoteData
-} from 'ngx-remotedata';
-import { localStorageSync } from './examples/ngrx/store/local-store-sync';
+import { localStorageSyncReducer } from './examples/ngrx/store/localstorage-sync';
 
-export function localStorageSyncReducer(
-  reducer: ActionReducer<any>
-): ActionReducer<any> {
-  return localStorageSync({
-    rehydrate: true,
-    storageKey: 'myAppStorage',
-    keys: {
-      meow: {
-        serialize: (rd: RemoteData<any>) => rd,
-        deserialize: (json: {
-          tag: RemoteData<any>['tag'];
-          err: any;
-          val: any;
-        }) => {
-          const rd = [
-            {
-              matcher: (tag: RemoteData<any>['tag']) => tag === 'NotAsked',
-              mapper: () => notAsked()
-            },
-            {
-              matcher: (tag: RemoteData<any>['tag']) => tag === 'InProgress',
-              mapper: () => inProgress(json.val)
-            },
-            {
-              matcher: (tag: RemoteData<any>['tag']) => tag === 'Failure',
-              mapper: () => failure(json.err, json.val)
-            },
-            {
-              matcher: (tag: RemoteData<any>['tag']) => tag === 'Success',
-              mapper: () => success(json.val)
-            }
-          ]
-            .filter(matchMap => matchMap.matcher(json.tag))
-            .map(matchMap => matchMap.mapper())
-            .pop();
-          return rd || notAsked();
-        }
-      }
-    }
-  })(reducer);
-}
 const metaReducers: Array<MetaReducer<any, any>> = [localStorageSyncReducer];
 
 @NgModule({

@@ -169,7 +169,7 @@ export class AppComponent {
 
 <a name="examples-demo" />
 
-#### Demo
+#### Demo 👀
 
 - [Stackblitz Ngrx demo](https://stackblitz.com/edit/ngx-remotedata-demo?file=src%2Fapp%2Fmeow%2Freducer.ts)
 
@@ -185,7 +185,7 @@ export class AppComponent {
 
 <a name="examples-ngrx" />
 
-- [Ngrx (includes store rehydration with de/serialization)](src/app/examples/ngrx)
+- [Ngrx](src/app/examples/ngrx) _(includes store rehydration from `localStorage`)_
 
 <a name="api" />
 
