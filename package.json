@@ -20,6 +20,7 @@
     "email": "joan.llenas.maso@gmail.com",
     "url": "http://joanllenas.com"
   },
+  "license": "BSD-3-Clause",
   "bugs": {
     "url": "https://github.com/joanllenas/ngx-remotedata/issues"
   },
