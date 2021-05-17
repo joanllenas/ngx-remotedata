@@ -57,6 +57,7 @@ export const isNotAsked = <T, E>(value: unknown): value is NotAsked => {
   return (
     value !== null &&
     value !== undefined &&
+    (value as object).hasOwnProperty('tag') &&
     (value as RemoteData<T, E>).tag === 'NotAsked'
   );
 };
@@ -65,6 +66,7 @@ export const isInProgress = <T, E>(value: unknown): value is InProgress<T> => {
   return (
     value !== null &&
     value !== undefined &&
+    (value as object).hasOwnProperty('tag') &&
     (value as RemoteData<T, E>).tag === 'InProgress'
   );
 };
@@ -73,6 +75,7 @@ export const isFailure = <T, E>(value: unknown): value is Failure<E, T> => {
   return (
     value !== null &&
     value !== undefined &&
+    (value as object).hasOwnProperty('tag') &&
     (value as RemoteData<T, E>).tag === 'Failure'
   );
 };
@@ -81,6 +84,7 @@ export const isSuccess = <T, E>(value: unknown): value is Success<T> => {
   return (
     value !== null &&
     value !== undefined &&
+    (value as object).hasOwnProperty('tag') &&
     (value as RemoteData<T, E>).tag === 'Success'
   );
 };
@@ -88,13 +92,16 @@ export const isSuccess = <T, E>(value: unknown): value is Success<T> => {
 export const isRemoteData = <T, E = DefaultError>(
   value: unknown
 ): value is RemoteData<T, E> => {
+  const hasRemoteDataTag = (tag: RemoteData<any, any>['tag']) =>
+    tag === 'NotAsked' ||
+    tag === 'InProgress' ||
+    tag === 'Success' ||
+    tag === 'Failure';
   return (
-    (value !== null &&
-      value !== undefined &&
-      (value as RemoteData<T, E>).tag === 'NotAsked') ||
-    (value as RemoteData<T, E>).tag === 'InProgress' ||
-    (value as RemoteData<T, E>).tag === 'Success' ||
-    (value as RemoteData<T, E>).tag === 'Failure'
+    value !== null &&
+    value !== undefined &&
+    (value as object).hasOwnProperty('tag') &&
+    hasRemoteDataTag((value as RemoteData<T, E>).tag)
   );
 };
 

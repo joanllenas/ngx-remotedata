@@ -10,8 +10,18 @@ import {
   mapFailure,
   isFailure,
   isInProgress,
-  chain
+  chain,
+  isNotAsked,
+  isSuccess,
+  isRemoteData
 } from './remote-data';
+
+interface RemoteDataGuardsTestObj {
+  name: string;
+  fn: (rd: RemoteData<any, any>) => boolean;
+  truth: RemoteData<any, any>;
+  falses: any[];
+}
 
 describe('RemoteData', () => {
   describe('notAsked', () => {
@@ -136,6 +146,50 @@ describe('RemoteData', () => {
       expect(ageResult).toEqual(success(25));
       ageResult = chain(checkAge, success(-3));
       expect(ageResult).toEqual(failure('-3  is an invalid age'));
+    });
+  });
+
+  describe('Type Guard', () => {
+    ([
+      {
+        name: 'isNotAsked',
+        fn: isNotAsked,
+        truth: notAsked(),
+        falses: [success('hola'), null, undefined, 'hola', {}]
+      },
+      {
+        name: 'isSuccess',
+        fn: isSuccess,
+        truth: success(1),
+        falses: [notAsked(), null, undefined, 'hola', {}]
+      },
+      {
+        name: 'isFailure',
+        fn: isFailure,
+        truth: failure('error!', 9),
+        falses: [success(9), null, undefined, 77, NaN]
+      },
+      {
+        name: 'isInProgress',
+        fn: isInProgress,
+        truth: inProgress(true),
+        falses: [failure('error!'), null, undefined, true, []]
+      },
+      {
+        name: 'isRemoteData',
+        fn: isRemoteData,
+        truth: notAsked(),
+        falses: [null, undefined, true, [], NaN, 8]
+      }
+    ] as RemoteDataGuardsTestObj[]).forEach(test => {
+      describe(test.name, () => {
+        it('should be true', () => {
+          expect(test.fn(test.truth)).toBe(true);
+        });
+        it('should be false', () => {
+          test.falses.forEach(val => expect(test.fn(val)).toBe(false));
+        });
+      });
     });
   });
 });
