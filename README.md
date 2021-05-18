@@ -73,11 +73,7 @@ Our html template will have to use complex `*ngIf` statements to make sure we ar
 Instead of using a complex data structures we use a single data type to express all possible request states:
 
 ```ts
-type RemoteData<T, E> 
-  = NotAsked 
-  | InProgress<T> 
-  | Failure<E, T> 
-  | Success<T>;
+type RemoteData<T, E> = NotAsked | InProgress<T> | Failure<E, T> | Success<T>;
 ```
 
 This approach **makes it impossible to create invalid states**.
@@ -398,6 +394,44 @@ let ageResult = chain(checkAge, success(25));
 expect(ageResult).toEqual(success(25));
 ageResult = chain(checkAge, success(-3));
 expect(ageResult).toEqual(failure('-3  is an invalid age'));
+```
+
+## RxJs operators
+
+### filterSuccess 📚
+
+Specialized version of the rxjs `filter` operator for `RemoteData` values.
+Emits only when source `Observable` is a `Success`, also narrows the emitted value to `Success`.
+
+```ts
+// Example
+const myRemoteData = success(3);
+of(myRemoteData)
+  .pipe(
+    filterSuccess(),
+    map(s => s.value * 2)
+  )
+  .subscribe(n => {
+    console.log(n); // 6
+  });
+```
+
+### filterFailure 📚
+
+Specialized version of the rxjs `filter` operator for `RemoteData` values.
+Emits only when source `Observable` is a `Failure`, also narrows the emitted value to `Failure`.
+
+```ts
+// Example
+const myRemoteData = failure('wrong!');
+of(myRemoteData)
+  .pipe(
+    filterFailure(),
+    map(f => 'Error: ' + f.error)
+  )
+  .subscribe(err => {
+    console.log(err); // 'Error: wrong!'
+  });
 ```
 
 <a name="pipes" />

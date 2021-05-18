@@ -1,3 +1,5 @@
+import { Observable } from 'rxjs';
+
 type DefaultError = string;
 
 interface NotAsked {
@@ -162,6 +164,48 @@ export const chain = <A, B, E>(
   rd: RemoteData<A, E>
 ): RemoteData<B, E> =>
   isSuccess(rd) ? fn(rd.value) : (rd as RemoteData<B, E>);
+
+// ----------------------------
+//
+//  RxJs specific
+//
+// ----------------------------
+
+/**
+ * Emits only when source Observable is a Success
+ * @returns Success<T>
+ */
+export function filterSuccess() {
+  return <T, E>(source: Observable<RemoteData<T, E>>): Observable<Success<T>> =>
+    new Observable(subscriber => {
+      source.subscribe({
+        next(value) {
+          if (isSuccess(value)) {
+            subscriber.next(value);
+          }
+        }
+      });
+    });
+}
+
+/**
+ * Emits only when source Observable is a Failure
+ * @returns Failure<E, T>
+ */
+export function filterFailure() {
+  return <T, E>(
+    source: Observable<RemoteData<T, E>>
+  ): Observable<Failure<E, T>> =>
+    new Observable(subscriber => {
+      source.subscribe({
+        next(value) {
+          if (isFailure(value)) {
+            subscriber.next(value);
+          }
+        }
+      });
+    });
+}
 
 // ----------------------------
 //

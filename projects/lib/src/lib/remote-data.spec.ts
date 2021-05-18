@@ -1,3 +1,5 @@
+import { Observable, of } from 'rxjs';
+import { filter, map as map$, tap } from 'rxjs/operators';
 import {
   RemoteData,
   notAsked,
@@ -13,7 +15,9 @@ import {
   chain,
   isNotAsked,
   isSuccess,
-  isRemoteData
+  isRemoteData,
+  filterSuccess,
+  filterFailure
 } from './remote-data';
 
 interface RemoteDataGuardsTestObj {
@@ -150,6 +154,64 @@ describe('RemoteData', () => {
   });
 
   describe('Type Guard', () => {
+    describe('type inference', () => {
+      it('isInProgress should infer InProgress', () => {
+        const val = inProgress<number, string>(99);
+        expect(isInProgress(val) ? val.value : val).toBe(99);
+      });
+      it('isSuccess should infer Success', () => {
+        const val: any = 'hello';
+        expect(isSuccess<string, string>(val) ? val.value : val).toBe('hello');
+      });
+      it('isFailure should infer Failure', () => {
+        const val: any = 'hello';
+        expect(isFailure<string, Error>(val) ? val.error : val).toBe('hello');
+      });
+    });
+
+    describe('Observable guards', () => {
+      it('filterSuccess should filter RemoteData Observables and infer Success', () => {
+        let v = 0;
+        const fn = (value: RemoteData<number, Error>) =>
+          of(value)
+            .pipe(
+              filterSuccess(),
+              map$(val => val.value * 2)
+            )
+            .subscribe(n => {
+              v = n;
+            })
+            .unsubscribe();
+
+        fn(success(3));
+        expect(v).toBe(6);
+
+        v = 0;
+        fn(notAsked());
+        expect(v).toBe(0);
+      });
+      it('filterFailure should filter RemoteData Observables and infer Failure', () => {
+        let v = '-';
+        const fn = (value: RemoteData<number, string>) =>
+          of(value)
+            .pipe(
+              filterFailure(),
+              map$(val => 'Error: ' + val.error)
+            )
+            .subscribe(n => {
+              v = n;
+            })
+            .unsubscribe();
+
+        fn(failure('wrong!'));
+        expect(v).toBe('Error: wrong!');
+
+        v = '-';
+        fn(notAsked());
+        expect(v).toBe('-');
+      });
+    });
+
     ([
       {
         name: 'isNotAsked',
