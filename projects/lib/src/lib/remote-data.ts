@@ -2,22 +2,22 @@ import { Observable } from 'rxjs';
 
 type DefaultError = string;
 
-interface NotAsked {
+export interface NotAsked {
   readonly tag: 'NotAsked';
 }
 
-interface InProgress<T> {
+export interface InProgress<T> {
   readonly tag: 'InProgress';
   readonly value: T | undefined;
 }
 
-interface Failure<E, T> {
+export interface Failure<E, T> {
   readonly tag: 'Failure';
   readonly value: T | undefined;
   error: E;
 }
 
-interface Success<T> {
+export interface Success<T> {
   readonly tag: 'Success';
   readonly value: T;
 }
