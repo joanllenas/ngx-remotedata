@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Actions, Effect, ofType } from '@ngrx/effects';
+import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { Action } from '@ngrx/store';
 import { Observable, of } from 'rxjs';
 import { catchError, map, switchMap } from 'rxjs/operators';
@@ -15,8 +15,8 @@ import {
 export class MeowEffects {
   constructor(private actions$: Actions, private service: MeowService) {}
 
-  @Effect()
-  meow$: Observable<Action> = this.actions$.pipe(
+  
+  meow$: Observable<Action> = createEffect(() => this.actions$.pipe(
     ofType<MeowAction>(MeowActionTypes.MEOW),
     switchMap(action => {
       if (action.payload.forceFailure) {
@@ -37,5 +37,5 @@ export class MeowEffects {
         })
       );
     })
-  );
+  ));
 }
