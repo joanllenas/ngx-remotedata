@@ -109,12 +109,12 @@ import {
   inProgress,
   notAsked,
   success,
-  failure
+  failure,
 } from 'ngx-remotedata';
 
 @Component({
   selector: 'app-root',
-  templateUrl: './app.component.html'
+  templateUrl: './app.component.html',
 })
 export class AppComponent {
   remoteData: RemoteData<string> = notAsked();
@@ -268,7 +268,7 @@ The `Failure` instance can contain a value of the same `T` type as `Success`. Us
 ```ts
 type User = { email: string };
 const myRemoteData: RemoteData<User> = failure('Something went wrong.', {
-  email: 'john@doe.com'
+  email: 'john@doe.com',
 });
 
 // (...)
@@ -327,9 +327,9 @@ With `fold` you _unwrap_ the `RemoteData` value by providing a function for each
 const rd = success('this is fine!');
 const result = fold(
   () => 'not asked',
-  val => 'in progress: ' + val,
+  (val) => 'in progress: ' + val,
   (error, value) => `failure: ${error} ${value}`,
-  value => 'success: ' + value,
+  (value) => 'success: ' + value,
   rd
 );
 console.log(result); // success: this is fine!
@@ -409,9 +409,9 @@ const myRemoteData = success(3);
 of(myRemoteData)
   .pipe(
     filterSuccess(),
-    map(s => s.value * 2)
+    map((s) => s.value * 2)
   )
-  .subscribe(n => {
+  .subscribe((n) => {
     console.log(n); // 6
   });
 ```
@@ -427,9 +427,9 @@ const myRemoteData = failure('wrong!');
 of(myRemoteData)
   .pipe(
     filterFailure(),
-    map(f => 'Error: ' + f.error)
+    map((f) => 'Error: ' + f.error)
   )
-  .subscribe(err => {
+  .subscribe((err) => {
     console.log(err); // 'Error: wrong!'
   });
 ```

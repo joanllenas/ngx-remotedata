@@ -1,5 +1,5 @@
-import { Observable, of } from 'rxjs';
-import { filter, map as map$, tap } from 'rxjs/operators';
+import { of } from 'rxjs';
+import { map as map$ } from 'rxjs/operators';
 import {
   RemoteData,
   notAsked,
@@ -17,7 +17,7 @@ import {
   isSuccess,
   isRemoteData,
   filterSuccess,
-  filterFailure
+  filterFailure,
 } from './remote-data';
 
 interface RemoteDataGuardsTestObj {
@@ -69,7 +69,7 @@ describe('RemoteData', () => {
       const value = { type: 'DoStuff' };
       const defaultValue = { type: 'nope' };
       expect(getOrElse(success(value), defaultValue)).toEqual({
-        type: 'DoStuff'
+        type: 'DoStuff',
       });
     });
     it('should return the default value when not a Success', () => {
@@ -83,9 +83,9 @@ describe('RemoteData', () => {
     const theFold = (rd: RemoteData<string>) =>
       fold(
         () => 'not asked',
-        val => 'in progress ' + val,
+        (val) => 'in progress ' + val,
         (error, value) => `failure ${error} ${value}`,
-        value => 'success ' + value,
+        (value) => 'success ' + value,
         rd
       );
     it('it should unwrap the NotAsked variant', () => {
@@ -104,7 +104,7 @@ describe('RemoteData', () => {
     });
   });
 
-  describe('map', () => () => {
+  describe('map', () => {
     it('should transform a succes value', () => {
       const hello = success('hello!');
       const scream = (s: string) => s.toUpperCase();
@@ -117,7 +117,7 @@ describe('RemoteData', () => {
     });
   });
 
-  describe('mapFailure', () => () => {
+  describe('mapFailure', () => {
     it('should transform a failure value', () => {
       const error = failure('wrong!');
       const scream = (s: string) => s.toUpperCase();
@@ -130,12 +130,12 @@ describe('RemoteData', () => {
     });
   });
 
-  describe('chain', () => () => {
+  describe('chain', () => {
     it('should chain successes', () => {
       const indent = (str: string) => success(' ' + str);
       let indented = chain(indent, success('hello'));
       indented = chain(indent, indented);
-      expect(indented).toEqual(success('  success'));
+      expect(indented).toEqual(success('  hello'));
     });
     it('should not chain on non Success values', () => {
       const indent = (str: string) => success(' ' + str);
@@ -149,7 +149,7 @@ describe('RemoteData', () => {
       let ageResult = chain(checkAge, success(25));
       expect(ageResult).toEqual(success(25));
       ageResult = chain(checkAge, success(-3));
-      expect(ageResult).toEqual(failure('-3  is an invalid age'));
+      expect(ageResult).toEqual(failure('-3 is an invalid age'));
     });
   });
 
@@ -176,9 +176,9 @@ describe('RemoteData', () => {
           of(value)
             .pipe(
               filterSuccess(),
-              map$(val => val.value * 2)
+              map$((val) => val.value * 2)
             )
-            .subscribe(n => {
+            .subscribe((n) => {
               v = n;
             })
             .unsubscribe();
@@ -196,9 +196,9 @@ describe('RemoteData', () => {
           of(value)
             .pipe(
               filterFailure(),
-              map$(val => 'Error: ' + val.error)
+              map$((val) => 'Error: ' + val.error)
             )
-            .subscribe(n => {
+            .subscribe((n) => {
               v = n;
             })
             .unsubscribe();
@@ -212,44 +212,46 @@ describe('RemoteData', () => {
       });
     });
 
-    ([
-      {
-        name: 'isNotAsked',
-        fn: isNotAsked,
-        truth: notAsked(),
-        falses: [success('hola'), null, undefined, 'hola', {}]
-      },
-      {
-        name: 'isSuccess',
-        fn: isSuccess,
-        truth: success(1),
-        falses: [notAsked(), null, undefined, 'hola', {}]
-      },
-      {
-        name: 'isFailure',
-        fn: isFailure,
-        truth: failure('error!', 9),
-        falses: [success(9), null, undefined, 77, NaN]
-      },
-      {
-        name: 'isInProgress',
-        fn: isInProgress,
-        truth: inProgress(true),
-        falses: [failure('error!'), null, undefined, true, []]
-      },
-      {
-        name: 'isRemoteData',
-        fn: isRemoteData,
-        truth: notAsked(),
-        falses: [null, undefined, true, [], NaN, 8]
-      }
-    ] as RemoteDataGuardsTestObj[]).forEach(test => {
+    (
+      [
+        {
+          name: 'isNotAsked',
+          fn: isNotAsked,
+          truth: notAsked(),
+          falses: [success('hola'), null, undefined, 'hola', {}],
+        },
+        {
+          name: 'isSuccess',
+          fn: isSuccess,
+          truth: success(1),
+          falses: [notAsked(), null, undefined, 'hola', {}],
+        },
+        {
+          name: 'isFailure',
+          fn: isFailure,
+          truth: failure('error!', 9),
+          falses: [success(9), null, undefined, 77, NaN],
+        },
+        {
+          name: 'isInProgress',
+          fn: isInProgress,
+          truth: inProgress(true),
+          falses: [failure('error!'), null, undefined, true, []],
+        },
+        {
+          name: 'isRemoteData',
+          fn: isRemoteData,
+          truth: notAsked(),
+          falses: [null, undefined, true, [], NaN, 8],
+        },
+      ] as RemoteDataGuardsTestObj[]
+    ).forEach((test) => {
       describe(test.name, () => {
         it('should be true', () => {
           expect(test.fn(test.truth)).toBe(true);
         });
         it('should be false', () => {
-          test.falses.forEach(val => expect(test.fn(val)).toBe(false));
+          test.falses.forEach((val) => expect(test.fn(val)).toBe(false));
         });
       });
     });

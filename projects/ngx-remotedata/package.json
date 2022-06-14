@@ -1,6 +1,6 @@
 {
   "name": "ngx-remotedata",
-  "version": "3.0.3",
+  "version": "0.0.0",
   "description": "RemoteData: Slaying a UI Antipattern with Angular",
   "repository": {
     "type": "git",
@@ -24,11 +24,11 @@
     "url": "https://github.com/joanllenas/ngx-remotedata/issues"
   },
   "homepage": "https://github.com/joanllenas/ngx-remotedata#readme",
-  "dependencies": {
-    "tslib": "^2.0.0"
-  },
   "peerDependencies": {
-    "@angular/common": ">=6",
-    "@angular/core": ">=6"
+    "@angular/common": ">=13",
+    "@angular/core": ">=13"
+  },
+  "dependencies": {
+    "tslib": ">=2.3.0"
   }
 }

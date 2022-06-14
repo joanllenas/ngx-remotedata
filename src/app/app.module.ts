@@ -8,7 +8,7 @@ import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { RemoteDataModule } from '../../projects/lib/src/lib/lib.module';
+import { RemoteDataModule } from 'projects/ngx-remotedata/src/lib/lib.module';
 import { MeowService } from './services/meow.service';
 import { REDUCER_TOKEN, getReducers } from './examples/ngrx/store/reducers';
 import { NgrxComponent } from './examples/ngrx/ngrx.component';
@@ -29,16 +29,16 @@ const metaReducers: Array<MetaReducer<any, any>> = [localStorageSyncReducer];
     AppRoutingModule,
     RemoteDataModule,
     StoreModule.forRoot(REDUCER_TOKEN, {
-      metaReducers
+      metaReducers,
     }),
     StoreDevtoolsModule.instrument(),
-    EffectsModule.forRoot([MeowEffects])
+    EffectsModule.forRoot([MeowEffects]),
   ],
   providers: [
     MeowService,
     PosService,
-    { provide: REDUCER_TOKEN, useFactory: getReducers }
+    { provide: REDUCER_TOKEN, useFactory: getReducers },
   ],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
 })
 export class AppModule {}
