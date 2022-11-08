@@ -1,6 +1,6 @@
 {
   "name": "ngx-remotedata",
-  "version": "7.0.0",
+  "version": "7.0.1",
   "description": "RemoteData: Slaying a UI Antipattern with Angular",
   "repository": {
     "type": "git",
@@ -69,6 +69,6 @@
     "ng-packagr": "^14.0.0",
     "prettier": "^2.5.1",
     "sync-json": "^1.0.2",
-    "typescript": "~4.5.2"
+    "typescript": "~4.6.2"
   }
 }
