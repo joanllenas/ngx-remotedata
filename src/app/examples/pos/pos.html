@@ -24,8 +24,7 @@
 <div
   *ngIf="
     (service.meow$ | async | isSuccess) ||
-    ((service.meow$ | async | isInProgress) &&
-      (service.meow$ | async | inProgressValue))
+    (service.meow$ | async | isInProgress)
   "
 >
   <div class="row">
@@ -47,10 +46,7 @@
   <img
     style="margin-top: 10px"
     class="responsive-img"
-    [src]="
-      (service.meow$ | async | successValue)?.file ||
-      (service.meow$ | async | inProgressValue)?.file
-    "
+    [src]="(service.meow$ | async | successValue)?.file"
   />
 </div>
 

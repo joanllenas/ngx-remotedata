@@ -4,14 +4,10 @@ import {
   IsInProgressPipe,
   IsFailurePipe,
   IsSuccessPipe,
-  HasValuePipe,
   GetSuccessPipe,
   GetFailureErrorPipe,
-  GetFailureValuePipe,
-  GetInProgressPipe,
-  GetRemoteDataValuePipe,
   AnyIsInProgressPipe,
-  AnyIsNotAskedPipe
+  AnyIsNotAskedPipe,
 } from './pipes';
 
 const declarations = [
@@ -19,19 +15,15 @@ const declarations = [
   IsInProgressPipe,
   IsFailurePipe,
   IsSuccessPipe,
-  HasValuePipe,
   GetSuccessPipe,
   GetFailureErrorPipe,
-  GetFailureValuePipe,
-  GetInProgressPipe,
-  GetRemoteDataValuePipe,
   AnyIsInProgressPipe,
-  AnyIsNotAskedPipe
+  AnyIsNotAskedPipe,
 ];
 
 @NgModule({
   declarations,
   imports: [],
-  exports: declarations
+  exports: declarations,
 })
 export class RemoteDataModule {}

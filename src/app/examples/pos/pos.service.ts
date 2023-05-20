@@ -7,14 +7,7 @@ import {
   success,
   inProgress,
   failure,
-  isSuccess
 } from 'ngx-remotedata';
-
-const oldValue = (obs$: Observable<RemoteData<CatImage>>) => {
-  let value: RemoteData<CatImage> | undefined;
-  obs$.subscribe(rd => (value = rd));
-  return isSuccess(value) ? value.value : undefined;
-};
 
 @Injectable()
 export class PosService {
@@ -25,16 +18,16 @@ export class PosService {
   }
 
   meow() {
-    this.meow$.next(inProgress(oldValue(this.meow$)));
+    this.meow$.next(inProgress());
     this.meowService
       .meow()
-      .subscribe(catImage => this.meow$.next(success(catImage)));
+      .subscribe((catImage) => this.meow$.next(success(catImage)));
   }
 
   meowFail() {
-    this.meow$.next(inProgress(oldValue(this.meow$)));
+    this.meow$.next(inProgress());
     this.meowService
       .meow()
-      .subscribe(_ => this.meow$.next(failure('Something wrong happened')));
+      .subscribe((_) => this.meow$.next(failure('Something wrong happened')));
   }
 }
