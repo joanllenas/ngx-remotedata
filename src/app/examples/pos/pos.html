@@ -23,8 +23,7 @@
 <!-- Success -->
 <div
   *ngIf="
-    (service.meow$ | async | isSuccess) ||
-    (service.meow$ | async | isInProgress)
+    (service.meow$ | async | isSuccess)
   "
 >
   <div class="row">
