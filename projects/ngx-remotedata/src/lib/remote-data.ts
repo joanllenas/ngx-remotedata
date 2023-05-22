@@ -6,14 +6,12 @@ export interface NotAsked {
   readonly tag: 'NotAsked';
 }
 
-export interface InProgress<T> {
+export interface InProgress {
   readonly tag: 'InProgress';
-  readonly value: T | undefined;
 }
 
-export interface Failure<E, T> {
+export interface Failure<E> {
   readonly tag: 'Failure';
-  readonly value: T | undefined;
   error: E;
 }
 
@@ -32,17 +30,12 @@ export const notAsked = <T, E = DefaultError>(): RemoteData<T, E> => {
   return { tag: 'NotAsked' };
 };
 
-export const inProgress = <T, E = DefaultError>(
-  value?: T
-): RemoteData<T, E> => {
-  return { tag: 'InProgress', value };
+export const inProgress = <T, E = DefaultError>(): RemoteData<T, E> => {
+  return { tag: 'InProgress' };
 };
 
-export const failure = <T, E = DefaultError>(
-  error: E,
-  value?: T
-): RemoteData<T, E> => {
-  return { tag: 'Failure', error, value };
+export const failure = <T, E = DefaultError>(error: E): RemoteData<T, E> => {
+  return { tag: 'Failure', error };
 };
 
 export const success = <T, E = DefaultError>(value: T): RemoteData<T, E> => {
@@ -64,7 +57,7 @@ export const isNotAsked = <T, E>(value: unknown): value is NotAsked => {
   );
 };
 
-export const isInProgress = <T, E>(value: unknown): value is InProgress<T> => {
+export const isInProgress = <T, E>(value: unknown): value is InProgress => {
   return (
     value !== null &&
     value !== undefined &&
@@ -73,7 +66,7 @@ export const isInProgress = <T, E>(value: unknown): value is InProgress<T> => {
   );
 };
 
-export const isFailure = <T, E>(value: unknown): value is Failure<E, T> => {
+export const isFailure = <T, E>(value: unknown): value is Failure<E> => {
   return (
     value !== null &&
     value !== undefined &&
@@ -115,8 +108,8 @@ export const isRemoteData = <T, E = DefaultError>(
 
 export const fold = <T, E>(
   onNotAsked: () => T,
-  onInProgress: (value: T | undefined) => T,
-  onFailure: (error: E, value: T | undefined) => T,
+  onInProgress: () => T,
+  onFailure: (error: E) => T,
   onSuccess: (value: T) => T,
   rd: RemoteData<T, E>
 ): T => {
@@ -124,9 +117,9 @@ export const fold = <T, E>(
     case 'NotAsked':
       return onNotAsked();
     case 'InProgress':
-      return onInProgress(rd.value);
+      return onInProgress();
     case 'Failure':
-      return onFailure(rd.error, rd.value);
+      return onFailure(rd.error);
     case 'Success':
       return onSuccess(rd.value);
   }
@@ -177,13 +170,13 @@ export const chain = <A, B, E>(
  */
 export function filterSuccess() {
   return <T, E>(source: Observable<RemoteData<T, E>>): Observable<Success<T>> =>
-    new Observable(subscriber => {
+    new Observable((subscriber) => {
       source.subscribe({
         next(value) {
           if (isSuccess(value)) {
             subscriber.next(value);
           }
-        }
+        },
       });
     });
 }
@@ -193,16 +186,14 @@ export function filterSuccess() {
  * @returns Failure<E, T>
  */
 export function filterFailure() {
-  return <T, E>(
-    source: Observable<RemoteData<T, E>>
-  ): Observable<Failure<E, T>> =>
-    new Observable(subscriber => {
+  return <T, E>(source: Observable<RemoteData<T, E>>): Observable<Failure<E>> =>
+    new Observable((subscriber) => {
       source.subscribe({
         next(value) {
           if (isFailure(value)) {
             subscriber.next(value);
           }
-        }
+        },
       });
     });
 }
@@ -215,6 +206,6 @@ export function filterFailure() {
 
 export type RemoteData<T, E = string> =
   | NotAsked
-  | InProgress<T>
-  | Failure<E, T>
+  | InProgress
+  | Failure<E>
   | Success<T>;

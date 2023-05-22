@@ -1,5 +1,5 @@
 <!-- Not Asked -->
-<div *ngIf="(service.meow$ | async | isNotAsked)">
+<div *ngIf="service.meow$ | async | isNotAsked">
   Get a random cat image<br />
   <button
     type="button"
@@ -21,13 +21,7 @@
 </div>
 
 <!-- Success -->
-<div
-  *ngIf="
-    (service.meow$ | async | isSuccess) ||
-    ((service.meow$ | async | isInProgress) &&
-      (service.meow$ | async | inProgressValue))
-  "
->
+<div *ngIf="service.meow$ | async | isSuccess">
   <div class="row">
     <div class="col s4">
       Get another one<br />
@@ -47,15 +41,12 @@
   <img
     style="margin-top: 10px"
     class="responsive-img"
-    [src]="
-      (service.meow$ | async | successValue)?.file ||
-      (service.meow$ | async | inProgressValue)?.file
-    "
+    [src]="(service.meow$ | async | successValue)?.file"
   />
 </div>
 
 <!-- Failure -->
-<div *ngIf="(service.meow$ | async | isFailure)">
+<div *ngIf="service.meow$ | async | isFailure">
   Try again<br />
   <button
     type="button"

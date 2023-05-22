@@ -43,23 +43,22 @@ describe('RemoteData', () => {
   });
 
   describe('inProgress', () => {
-    it('should be able to extract the wrapped value', () => {
-      const value = { type: 'DoStuff' };
-      const p = inProgress(value);
-      if (isInProgress(p)) {
-        expect(p.value).toBe(value);
-      }
+    it('should have an "InProgress" tag', () => {
+      const value = inProgress();
+      expect(value.tag).toBe('InProgress');
     });
   });
 
   describe('failure', () => {
-    it('should be able to extract the wrapped error and value', () => {
+    it('should have an "Failure" tag', () => {
+      const value = failure('Errrror');
+      expect(value.tag).toBe('Failure');
+    });
+    it('should be able to extract the wrapped error', () => {
       const err = 'Ouch!';
-      const value = { type: 'DoStuff' };
-      const f = failure(err, value);
+      const f = failure(err);
       if (isFailure(f)) {
         expect(f.error).toBe(err);
-        expect(f.value).toBe(value);
       }
     });
   });
@@ -83,8 +82,8 @@ describe('RemoteData', () => {
     const theFold = (rd: RemoteData<string>) =>
       fold(
         () => 'not asked',
-        (val) => 'in progress ' + val,
-        (error, value) => `failure ${error} ${value}`,
+        () => 'in progress',
+        (error) => `failure ${error}`,
         (value) => 'success ' + value,
         rd
       );
@@ -92,12 +91,10 @@ describe('RemoteData', () => {
       expect(theFold(notAsked())).toBe('not asked');
     });
     it('it should unwrap the InProgress variant', () => {
-      expect(theFold(inProgress('is progress'))).toBe(
-        'in progress is progress'
-      );
+      expect(theFold(inProgress())).toBe('in progress');
     });
     it('it should unwrap the Failure variant', () => {
-      expect(theFold(failure('uh', 'oh'))).toBe('failure uh oh');
+      expect(theFold(failure('uh'))).toBe('failure uh');
     });
     it('it should unwrap the Success variant', () => {
       expect(theFold(success('is nice!'))).toBe('success is nice!');
@@ -111,9 +108,9 @@ describe('RemoteData', () => {
       expect(map(scream, hello)).toEqual(success('HELLO!'));
     });
     it('should not transform a non succes value', () => {
-      const hello = inProgress('hello!');
+      const hello: RemoteData<string> = inProgress();
       const scream = (s: string) => s.toUpperCase();
-      expect(map(scream, hello)).toEqual(inProgress('hello!'));
+      expect(map(scream, hello)).toEqual(inProgress());
     });
   });
 
@@ -124,9 +121,9 @@ describe('RemoteData', () => {
       expect(mapFailure(scream, error)).toEqual(failure('WRONG!'));
     });
     it('should not transform a non failure value', () => {
-      const hello = inProgress('hello!');
+      const hello = inProgress();
       const scream = (s: string) => s.toUpperCase();
-      expect(mapFailure(scream, hello)).toEqual(inProgress('hello!'));
+      expect(mapFailure(scream, hello)).toEqual(inProgress());
     });
   });
 
@@ -155,17 +152,13 @@ describe('RemoteData', () => {
 
   describe('Type Guard', () => {
     describe('type inference', () => {
-      it('isInProgress should infer InProgress', () => {
-        const val = inProgress<number, string>(99);
-        expect(isInProgress(val) ? val.value : val).toBe(99);
-      });
       it('isSuccess should infer Success', () => {
         const val: any = 'hello';
         expect(isSuccess<string, string>(val) ? val.value : val).toBe('hello');
       });
       it('isFailure should infer Failure', () => {
-        const val: any = 'hello';
-        expect(isFailure<string, Error>(val) ? val.error : val).toBe('hello');
+        const err: any = 'hello';
+        expect(isFailure<string, Error>(err) ? err.error : err).toBe('hello');
       });
     });
 
@@ -229,13 +222,13 @@ describe('RemoteData', () => {
         {
           name: 'isFailure',
           fn: isFailure,
-          truth: failure('error!', 9),
+          truth: failure('error!'),
           falses: [success(9), null, undefined, 77, NaN],
         },
         {
           name: 'isInProgress',
           fn: isInProgress,
-          truth: inProgress(true),
+          truth: inProgress(),
           falses: [failure('error!'), null, undefined, true, []],
         },
         {

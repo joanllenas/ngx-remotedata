@@ -47,17 +47,17 @@
   </div>
   <div class="col s8">
     <!-- NotAsked -->
-    <h5 *ngIf="(testData$ | async | isNotAsked)">Not Asked</h5>
+    <h5 *ngIf="testData$ | async | isNotAsked">Not Asked</h5>
     <!-- InProgress -->
-    <div *ngIf="(testData$ | async | isInProgress)" class="progress">
+    <div *ngIf="testData$ | async | isInProgress" class="progress">
       <div class="indeterminate"></div>
     </div>
     <!-- Success -->
-    <h5 *ngIf="(testData$ | async | isSuccess)" class="green">
+    <h5 *ngIf="testData$ | async | isSuccess" class="green">
       Success({{ testData$ | async | successValue }})
     </h5>
     <!-- Failure -->
-    <h5 *ngIf="(testData$ | async | isFailure)" class="red">
+    <h5 *ngIf="testData$ | async | isFailure" class="red">
       Failure({{ testData$ | async | failureError }})
     </h5>
   </div>
@@ -89,7 +89,7 @@
   </div>
   <div class="col s8">
     <div
-      *ngIf="([inProgress1$, inProgress2$, inProgress3$] | anyIsInProgress)"
+      *ngIf="[inProgress1$, inProgress2$, inProgress3$] | anyIsInProgress"
       class="progress"
     >
       <div class="indeterminate"></div>
