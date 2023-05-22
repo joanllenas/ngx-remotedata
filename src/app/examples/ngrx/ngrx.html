@@ -1,5 +1,5 @@
 <!-- Not Asked -->
-<div *ngIf="(catImage$ | async | isNotAsked)">
+<div *ngIf="catImage$ | async | isNotAsked">
   Get a random cat image<br />
   <button
     type="button"
@@ -11,12 +11,12 @@
 </div>
 
 <!-- InProgress -->
-<div class="progress" *ngIf="(catImage$ | async | isInProgress)">
+<div class="progress" *ngIf="catImage$ | async | isInProgress">
   <div class="indeterminate"></div>
 </div>
 
 <!-- Success -->
-<div *ngIf="(catImage$ | async | isSuccess)">
+<div *ngIf="catImage$ | async | isSuccess">
   <div class="row">
     <div class="col s4">
       Get another one<br />
@@ -41,7 +41,7 @@
 </div>
 
 <!-- Failure -->
-<div *ngIf="(catImage$ | async | isFailure)">
+<div *ngIf="catImage$ | async | isFailure">
   Try again<br />
   <button
     type="button"
